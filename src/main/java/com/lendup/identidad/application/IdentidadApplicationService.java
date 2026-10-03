@@ -1,0 +1,53 @@
+package com.lendup.identidad.application;
+import com.lendup.shared.FlowSupport;
+import com.lendup.identidad.domain.repositories.IdentidadRepository;
+import tools.jackson.databind.json.JsonMapper;
+import java.util.*;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.http.HttpStatus;
+@Service
+public class IdentidadApplicationService extends FlowSupport {
+  public IdentidadApplicationService(IdentidadRepository store,JsonMapper mapper){super(store,mapper);}
+  @Transactional
+  public Object execute(String a,Map<String,String> v,Map<String,Object>b,Map<String,String>q){
+    String id=id(v);
+    switch(a){
+      case "createUser": {
+        if(!store.list("usuarios","firebase_uid",uid()).isEmpty())throw new ResponseStatusException(HttpStatus.CONFLICT,"Usuario registrado");
+        var role=store.list("roles","codigo","ESTUDIANTE");
+        if(role.isEmpty())throw new ResponseStatusException(HttpStatus.CONFLICT,"Falta rol ESTUDIANTE");
+        var u=store.create("usuarios",Map.of("firebase_uid",uid(),"correo_institucional",string(b,"correo_institucional"),
+          "rol_id",role.getFirst().get("id"),"estado_verificacion","NO_VERIFICADO"));
+        var p=editable(b);p.put("usuario_id",u.get("id"));store.create("perfiles",p);return u;
+      }
+      case "me":{
+        var current=user();var profiles=store.list("perfiles","usuario_id",current.get("id"));
+        return Map.of("usuario",current,"perfil",profiles.isEmpty()?Map.of():profiles.getFirst());
+      }
+      case "updateMe":return store.update("perfiles",store.list("perfiles","usuario_id",userId()).getFirst().get("id").toString(),b);
+      case "verify":{
+        var reference=string(b,"verificacion_referencia");
+        if(reference.isBlank())throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Se requiere verificacion_referencia");
+        return store.update("usuarios",userId(),Map.of("estado_verificacion","PENDIENTE",
+          "verificacion_referencia",reference,"verificacion_solicitada_en",now()));
+      }
+      case "terms":{
+        if(string(b,"version_terminos_aceptada").isBlank()||string(b,"version_descargo_aceptada").isBlank())
+          throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Se requieren ambas versiones aceptadas");
+        return store.update("usuarios",userId(),Map.of("version_terminos_aceptada",b.get("version_terminos_aceptada"),
+          "version_descargo_aceptada",b.get("version_descargo_aceptada"),"aceptados_en",now()));
+      }
+      case "userById":{
+        var target=store.get("usuarios",id);var profiles=store.list("perfiles","usuario_id",id);
+        var response=new LinkedHashMap<String,Object>();response.put("id",id);
+        response.put("estado_verificacion",target.get("estado_verificacion"));
+        if(!profiles.isEmpty()){
+          var profile=profiles.getFirst();for(var k:List.of("nombre","universidad","campus","carrera","ciclo","foto_url"))response.put(k,profile.get(k));
+        }return response;
+      }
+      default:throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Acción desconocida");
+    }
+  }
+}
