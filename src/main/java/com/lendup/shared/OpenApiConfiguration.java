@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 public class OpenApiConfiguration {
   @Bean OpenAPI lendupApi(){return new OpenAPI()
     .info(new Info().title("LendUp API").version("v1")
-      .description("Base modular con persistencia MySQL; consulte README para operaciones pendientes."))
+      .description("Base modular con persistencia MySQL."))
     .components(new Components().addSecuritySchemes("firebase",new SecurityScheme()
       .type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("Firebase ID token")))
     .addSecurityItem(new SecurityRequirement().addList("firebase"));}
