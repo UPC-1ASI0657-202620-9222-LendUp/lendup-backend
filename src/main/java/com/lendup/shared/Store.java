@@ -36,7 +36,7 @@ public class Store implements PersistencePort {
   }
   public boolean overlaps(String agendaId,Object from,Object to){
     var p=Map.of("agenda",agendaId,"from",from,"to",to);
-    return !db.queryForList("SELECT id FROM reservas WHERE agenda_id=:agenda AND estado='CONFIRMADA' AND desde < :to AND hasta > :from LIMIT 1",p).isEmpty();
+    return !db.queryForList("SELECT id FROM reservas WHERE agenda_id=:agenda AND estado='CONFIRMADA' AND desde < :to AND hasta > :from LIMIT 1 FOR UPDATE",p).isEmpty();
   }
   public boolean offered(String publicationId,Object from,Object to){
     var p=Map.of("publication",publicationId,"from",toSqlValue("desde",from),"to",toSqlValue("hasta",to));
