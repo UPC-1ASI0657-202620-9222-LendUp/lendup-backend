@@ -20,28 +20,28 @@ public class ReservasController {
     converted.values().removeIf(java.util.Objects::isNull);
     return converted;
   }
-  @Operation(summary="createRequest",description="POST /api/v1/solicitudes; ver estados y ejemplos en JSON_CONTRACTS.md")
+  @Operation(summary="createRequest",description="POST /api/v1/solicitudes")
   @PostMapping("/solicitudes")
   public ResponseEntity<Object> createRequest(@Valid @RequestBody CreateRequestRequest body) {
     var query=new java.util.LinkedHashMap<String,String>();
     var result=flow.execute("createRequest",java.util.Map.of(),bodyMap(body),query);
     return ResponseEntity.status(201).body(result);
   }
-  @Operation(summary="acceptRequest",description="POST /api/v1/solicitudes/{id}/aceptacion; ver estados y ejemplos en JSON_CONTRACTS.md")
+  @Operation(summary="acceptRequest",description="POST /api/v1/solicitudes/{id}/aceptacion")
   @PostMapping("/solicitudes/{id}/aceptacion")
   public ResponseEntity<Object> acceptRequest(@PathVariable("id") String id) {
     var query=new java.util.LinkedHashMap<String,String>();
     var result=flow.execute("acceptRequest",java.util.Map.of("id",id),java.util.Map.of(),query);
     return ResponseEntity.status(201).body(result);
   }
-  @Operation(summary="rejectRequest",description="POST /api/v1/solicitudes/{id}/rechazo; ver estados y ejemplos en JSON_CONTRACTS.md")
+  @Operation(summary="rejectRequest",description="POST /api/v1/solicitudes/{id}/rechazo")
   @PostMapping("/solicitudes/{id}/rechazo")
   public ResponseEntity<Object> rejectRequest(@PathVariable("id") String id, @Valid @RequestBody RejectRequestRequest body) {
     var query=new java.util.LinkedHashMap<String,String>();
     var result=flow.execute("rejectRequest",java.util.Map.of("id",id),bodyMap(body),query);
     return ResponseEntity.status(200).body(result);
   }
-  @Operation(summary="listReservations",description="GET /api/v1/reservas; ver estados y ejemplos en JSON_CONTRACTS.md")
+  @Operation(summary="listReservations",description="GET /api/v1/reservas")
   @GetMapping("/reservas")
   public ResponseEntity<Object> listReservations(@RequestParam(value="rol",required=false) String rol) {
     var query=new java.util.LinkedHashMap<String,String>();
@@ -49,21 +49,21 @@ public class ReservasController {
     var result=flow.execute("listReservations",java.util.Map.of(),java.util.Map.of(),query);
     return ResponseEntity.status(200).body(result);
   }
-  @Operation(summary="cancelReservation",description="POST /api/v1/reservas/{id}/cancelacion; ver estados y ejemplos en JSON_CONTRACTS.md")
+  @Operation(summary="cancelReservation",description="POST /api/v1/reservas/{id}/cancelacion")
   @PostMapping("/reservas/{id}/cancelacion")
   public ResponseEntity<Object> cancelReservation(@PathVariable("id") String id, @Valid @RequestBody CancelReservationRequest body) {
     var query=new java.util.LinkedHashMap<String,String>();
     var result=flow.execute("cancelReservation",java.util.Map.of("id",id),bodyMap(body),query);
     return ResponseEntity.status(200).body(result);
   }
-  @Operation(summary="contact",description="GET /api/v1/reservas/{id}/contacto; ver estados y ejemplos en JSON_CONTRACTS.md")
+  @Operation(summary="contact",description="GET /api/v1/reservas/{id}/contacto")
   @GetMapping("/reservas/{id}/contacto")
   public ResponseEntity<Object> contact(@PathVariable("id") String id) {
     var query=new java.util.LinkedHashMap<String,String>();
     var result=flow.execute("contact",java.util.Map.of("id",id),java.util.Map.of(),query);
     return ResponseEntity.status(200).body(result);
   }
-  @Operation(summary="listRequests",description="GET /api/v1/solicitudes; ver estados y ejemplos en JSON_CONTRACTS.md")
+  @Operation(summary="listRequests",description="GET /api/v1/solicitudes")
   @GetMapping("/solicitudes")
   public ResponseEntity<Object> listRequests(@RequestParam(value="rol",required=false) String rol, @RequestParam(value="estado",required=false) String estado) {
     var query=new java.util.LinkedHashMap<String,String>();
@@ -72,14 +72,14 @@ public class ReservasController {
     var result=flow.execute("listRequests",java.util.Map.of(),java.util.Map.of(),query);
     return ResponseEntity.status(200).body(result);
   }
-  @Operation(summary="request",description="GET /api/v1/solicitudes/{id}; ver estados y ejemplos en JSON_CONTRACTS.md")
+  @Operation(summary="request",description="GET /api/v1/solicitudes/{id}")
   @GetMapping("/solicitudes/{id}")
   public ResponseEntity<Object> request(@PathVariable("id") String id) {
     var query=new java.util.LinkedHashMap<String,String>();
     var result=flow.execute("request",java.util.Map.of("id",id),java.util.Map.of(),query);
     return ResponseEntity.status(200).body(result);
   }
-  @Operation(summary="cancelRequest",description="POST /api/v1/solicitudes/{id}/cancelacion; ver estados y ejemplos en JSON_CONTRACTS.md")
+  @Operation(summary="cancelRequest",description="POST /api/v1/solicitudes/{id}/cancelacion")
   @PostMapping("/solicitudes/{id}/cancelacion")
   public ResponseEntity<Object> cancelRequest(@PathVariable("id") String id, @Valid @RequestBody CancelRequestRequest body) {
     var query=new java.util.LinkedHashMap<String,String>();

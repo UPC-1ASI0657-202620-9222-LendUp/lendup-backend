@@ -20,14 +20,14 @@ public class ReputacionController {
     converted.values().removeIf(java.util.Objects::isNull);
     return converted;
   }
-  @Operation(summary="rating",description="POST /api/v1/prestamos/{id}/calificaciones; ver estados y ejemplos en JSON_CONTRACTS.md")
+  @Operation(summary="rating",description="POST /api/v1/prestamos/{id}/calificaciones")
   @PostMapping("/prestamos/{id}/calificaciones")
   public ResponseEntity<Object> rating(@PathVariable("id") String id, @Valid @RequestBody RatingRequest body) {
     var query=new java.util.LinkedHashMap<String,String>();
     var result=flow.execute("rating",java.util.Map.of("id",id),bodyMap(body),query);
     return ResponseEntity.status(201).body(result);
   }
-  @Operation(summary="reputation",description="GET /api/v1/estudiantes/{id}/reputacion; ver estados y ejemplos en JSON_CONTRACTS.md")
+  @Operation(summary="reputation",description="GET /api/v1/estudiantes/{id}/reputacion")
   @GetMapping("/estudiantes/{id}/reputacion")
   public ResponseEntity<Object> reputation(@PathVariable("id") String id) {
     var query=new java.util.LinkedHashMap<String,String>();

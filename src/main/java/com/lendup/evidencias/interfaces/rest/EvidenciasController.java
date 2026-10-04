@@ -20,35 +20,35 @@ public class EvidenciasController {
     converted.values().removeIf(java.util.Objects::isNull);
     return converted;
   }
-  @Operation(summary="evidence",description="POST /api/v1/prestamos/{id}/evidencias; ver estados y ejemplos en JSON_CONTRACTS.md")
+  @Operation(summary="evidence",description="POST /api/v1/prestamos/{id}/evidencias")
   @PostMapping("/prestamos/{id}/evidencias")
   public ResponseEntity<Object> evidence(@PathVariable("id") String id, @Valid @RequestBody EvidenceRequest body) {
     var query=new java.util.LinkedHashMap<String,String>();
     var result=flow.execute("evidence",java.util.Map.of("id",id),bodyMap(body),query);
     return ResponseEntity.status(201).body(result);
   }
-  @Operation(summary="analyze",description="POST /api/v1/prestamos/{id}/analisis-evidencias; ver estados y ejemplos en JSON_CONTRACTS.md")
+  @Operation(summary="analyze",description="POST /api/v1/prestamos/{id}/analisis-evidencias")
   @PostMapping("/prestamos/{id}/analisis-evidencias")
   public ResponseEntity<Object> analyze(@PathVariable("id") String id, @Valid @RequestBody AnalyzeRequest body) {
     var query=new java.util.LinkedHashMap<String,String>();
     var result=flow.execute("analyze",java.util.Map.of("id",id),bodyMap(body),query);
     return ResponseEntity.status(201).body(result);
   }
-  @Operation(summary="incident",description="POST /api/v1/incidencias; ver estados y ejemplos en JSON_CONTRACTS.md")
+  @Operation(summary="incident",description="POST /api/v1/incidencias")
   @PostMapping("/incidencias")
   public ResponseEntity<Object> incident(@Valid @RequestBody IncidentRequest body) {
     var query=new java.util.LinkedHashMap<String,String>();
     var result=flow.execute("incident",java.util.Map.of(),bodyMap(body),query);
     return ResponseEntity.status(201).body(result);
   }
-  @Operation(summary="incidentById",description="GET /api/v1/incidencias/{id}; ver estados y ejemplos en JSON_CONTRACTS.md")
+  @Operation(summary="incidentById",description="GET /api/v1/incidencias/{id}")
   @GetMapping("/incidencias/{id}")
   public ResponseEntity<Object> incidentById(@PathVariable("id") String id) {
     var query=new java.util.LinkedHashMap<String,String>();
     var result=flow.execute("incidentById",java.util.Map.of("id",id),java.util.Map.of(),query);
     return ResponseEntity.status(200).body(result);
   }
-  @Operation(summary="adminIncidents",description="GET /api/v1/admin/incidencias; ver estados y ejemplos en JSON_CONTRACTS.md")
+  @Operation(summary="adminIncidents",description="GET /api/v1/admin/incidencias")
   @GetMapping("/admin/incidencias")
   public ResponseEntity<Object> adminIncidents(@RequestParam(value="estado",required=false) String estado, @RequestParam(value="tipo",required=false) String tipo) {
     var query=new java.util.LinkedHashMap<String,String>();
@@ -57,7 +57,7 @@ public class EvidenciasController {
     var result=flow.execute("adminIncidents",java.util.Map.of(),java.util.Map.of(),query);
     return ResponseEntity.status(200).body(result);
   }
-  @Operation(summary="resolve",description="POST /api/v1/admin/incidencias/{id}/resolucion; ver estados y ejemplos en JSON_CONTRACTS.md")
+  @Operation(summary="resolve",description="POST /api/v1/admin/incidencias/{id}/resolucion")
   @PostMapping("/admin/incidencias/{id}/resolucion")
   public ResponseEntity<Object> resolve(@PathVariable("id") String id, @Valid @RequestBody ResolveRequest body) {
     var query=new java.util.LinkedHashMap<String,String>();

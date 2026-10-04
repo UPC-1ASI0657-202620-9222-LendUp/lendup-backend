@@ -20,35 +20,35 @@ public class CatalogoController {
     converted.values().removeIf(java.util.Objects::isNull);
     return converted;
   }
-  @Operation(summary="createPublication",description="POST /api/v1/objetos; ver estados y ejemplos en JSON_CONTRACTS.md")
+  @Operation(summary="createPublication",description="POST /api/v1/objetos")
   @PostMapping("/objetos")
   public ResponseEntity<Object> createPublication(@Valid @RequestBody CreatePublicationRequest body) {
     var query=new java.util.LinkedHashMap<String,String>();
     var result=flow.execute("createPublication",java.util.Map.of(),bodyMap(body),query);
     return ResponseEntity.status(201).body(result);
   }
-  @Operation(summary="updatePublication",description="PUT /api/v1/objetos/{id}; ver estados y ejemplos en JSON_CONTRACTS.md")
+  @Operation(summary="updatePublication",description="PUT /api/v1/objetos/{id}")
   @PutMapping("/objetos/{id}")
   public ResponseEntity<Object> updatePublication(@PathVariable("id") String id, @Valid @RequestBody UpdatePublicationRequest body) {
     var query=new java.util.LinkedHashMap<String,String>();
     var result=flow.execute("updatePublication",java.util.Map.of("id",id),bodyMap(body),query);
     return ResponseEntity.status(200).body(result);
   }
-  @Operation(summary="publicationState",description="PATCH /api/v1/objetos/{id}/estado; ver estados y ejemplos en JSON_CONTRACTS.md")
+  @Operation(summary="publicationState",description="PATCH /api/v1/objetos/{id}/estado")
   @PatchMapping("/objetos/{id}/estado")
   public ResponseEntity<Object> publicationState(@PathVariable("id") String id, @Valid @RequestBody PublicationStateRequest body) {
     var query=new java.util.LinkedHashMap<String,String>();
     var result=flow.execute("publicationState",java.util.Map.of("id",id),bodyMap(body),query);
     return ResponseEntity.status(200).body(result);
   }
-  @Operation(summary="availability",description="PUT /api/v1/objetos/{id}/disponibilidad; ver estados y ejemplos en JSON_CONTRACTS.md")
+  @Operation(summary="availability",description="PUT /api/v1/objetos/{id}/disponibilidad")
   @PutMapping("/objetos/{id}/disponibilidad")
   public ResponseEntity<Object> availability(@PathVariable("id") String id, @Valid @RequestBody AvailabilityRequest body) {
     var query=new java.util.LinkedHashMap<String,String>();
     var result=flow.execute("availability",java.util.Map.of("id",id),bodyMap(body),query);
     return ResponseEntity.status(201).body(result);
   }
-  @Operation(summary="listPublications",description="GET /api/v1/objetos; ver estados y ejemplos en JSON_CONTRACTS.md")
+  @Operation(summary="listPublications",description="GET /api/v1/objetos")
   @GetMapping("/objetos")
   public ResponseEntity<Object> listPublications(@RequestParam(value="nombre",required=false) String nombre, @RequestParam(value="categoria",required=false) String categoria, @RequestParam(value="campus",required=false) String campus, @RequestParam(value="desde",required=false) String desde, @RequestParam(value="hasta",required=false) String hasta) {
     var query=new java.util.LinkedHashMap<String,String>();
@@ -60,14 +60,14 @@ public class CatalogoController {
     var result=flow.execute("listPublications",java.util.Map.of(),java.util.Map.of(),query);
     return ResponseEntity.status(200).body(result);
   }
-  @Operation(summary="publication",description="GET /api/v1/objetos/{id}; ver estados y ejemplos en JSON_CONTRACTS.md")
+  @Operation(summary="publication",description="GET /api/v1/objetos/{id}")
   @GetMapping("/objetos/{id}")
   public ResponseEntity<Object> publication(@PathVariable("id") String id) {
     var query=new java.util.LinkedHashMap<String,String>();
     var result=flow.execute("publication",java.util.Map.of("id",id),java.util.Map.of(),query);
     return ResponseEntity.status(200).body(result);
   }
-  @Operation(summary="termsDocument",description="GET /api/v1/terminos; ver estados y ejemplos en JSON_CONTRACTS.md")
+  @Operation(summary="termsDocument",description="GET /api/v1/terminos")
   @GetMapping("/terminos")
   public ResponseEntity<Object> termsDocument() {
     var query=new java.util.LinkedHashMap<String,String>();

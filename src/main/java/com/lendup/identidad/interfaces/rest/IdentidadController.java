@@ -20,42 +20,42 @@ public class IdentidadController {
     converted.values().removeIf(java.util.Objects::isNull);
     return converted;
   }
-  @Operation(summary="createUser",description="POST /api/v1/estudiantes; ver estados y ejemplos en JSON_CONTRACTS.md")
+  @Operation(summary="createUser",description="POST /api/v1/estudiantes")
   @PostMapping("/estudiantes")
   public ResponseEntity<Object> createUser(@Valid @RequestBody CreateUserRequest body) {
     var query=new java.util.LinkedHashMap<String,String>();
     var result=flow.execute("createUser",java.util.Map.of(),bodyMap(body),query);
     return ResponseEntity.status(201).body(result);
   }
-  @Operation(summary="me",description="GET /api/v1/estudiantes/me; ver estados y ejemplos en JSON_CONTRACTS.md")
+  @Operation(summary="me",description="GET /api/v1/estudiantes/me")
   @GetMapping("/estudiantes/me")
   public ResponseEntity<Object> me() {
     var query=new java.util.LinkedHashMap<String,String>();
     var result=flow.execute("me",java.util.Map.of(),java.util.Map.of(),query);
     return ResponseEntity.status(200).body(result);
   }
-  @Operation(summary="updateMe",description="PUT /api/v1/estudiantes/me; ver estados y ejemplos en JSON_CONTRACTS.md")
+  @Operation(summary="updateMe",description="PUT /api/v1/estudiantes/me")
   @PutMapping("/estudiantes/me")
   public ResponseEntity<Object> updateMe(@Valid @RequestBody UpdateMeRequest body) {
     var query=new java.util.LinkedHashMap<String,String>();
     var result=flow.execute("updateMe",java.util.Map.of(),bodyMap(body),query);
     return ResponseEntity.status(200).body(result);
   }
-  @Operation(summary="verify",description="POST /api/v1/estudiantes/me/verificacion; ver estados y ejemplos en JSON_CONTRACTS.md")
+  @Operation(summary="verify",description="POST /api/v1/estudiantes/me/verificacion")
   @PostMapping("/estudiantes/me/verificacion")
   public ResponseEntity<Object> verify(@Valid @RequestBody VerifyRequest body) {
     var query=new java.util.LinkedHashMap<String,String>();
     var result=flow.execute("verify",java.util.Map.of(),bodyMap(body),query);
     return ResponseEntity.status(201).body(result);
   }
-  @Operation(summary="terms",description="POST /api/v1/estudiantes/me/aceptacion-terminos; ver estados y ejemplos en JSON_CONTRACTS.md")
+  @Operation(summary="terms",description="POST /api/v1/estudiantes/me/aceptacion-terminos")
   @PostMapping("/estudiantes/me/aceptacion-terminos")
   public ResponseEntity<Object> terms(@Valid @RequestBody TermsRequest body) {
     var query=new java.util.LinkedHashMap<String,String>();
     var result=flow.execute("terms",java.util.Map.of(),bodyMap(body),query);
     return ResponseEntity.status(200).body(result);
   }
-  @Operation(summary="userById",description="GET /api/v1/estudiantes/{id}; ver estados y ejemplos en JSON_CONTRACTS.md")
+  @Operation(summary="userById",description="GET /api/v1/estudiantes/{id}")
   @GetMapping("/estudiantes/{id}")
   public ResponseEntity<Object> userById(@PathVariable("id") String id) {
     var query=new java.util.LinkedHashMap<String,String>();

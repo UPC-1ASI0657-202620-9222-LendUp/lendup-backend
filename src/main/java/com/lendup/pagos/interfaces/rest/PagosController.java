@@ -20,35 +20,35 @@ public class PagosController {
     converted.values().removeIf(java.util.Objects::isNull);
     return converted;
   }
-  @Operation(summary="paymentMethods",description="GET /api/v1/medios-pago; ver estados y ejemplos en JSON_CONTRACTS.md")
+  @Operation(summary="paymentMethods",description="GET /api/v1/medios-pago")
   @GetMapping("/medios-pago")
   public ResponseEntity<Object> paymentMethods() {
     var query=new java.util.LinkedHashMap<String,String>();
     var result=flow.execute("paymentMethods",java.util.Map.of(),java.util.Map.of(),query);
     return ResponseEntity.status(200).body(result);
   }
-  @Operation(summary="payment",description="POST /api/v1/pagos; ver estados y ejemplos en JSON_CONTRACTS.md")
+  @Operation(summary="payment",description="POST /api/v1/pagos")
   @PostMapping("/pagos")
   public ResponseEntity<Object> payment(@Valid @RequestBody PaymentRequest body) {
     var query=new java.util.LinkedHashMap<String,String>();
     var result=flow.execute("payment",java.util.Map.of(),bodyMap(body),query);
     return ResponseEntity.status(201).body(result);
   }
-  @Operation(summary="guarantee",description="POST /api/v1/garantias; ver estados y ejemplos en JSON_CONTRACTS.md")
+  @Operation(summary="guarantee",description="POST /api/v1/garantias")
   @PostMapping("/garantias")
   public ResponseEntity<Object> guarantee(@Valid @RequestBody GuaranteeRequest body) {
     var query=new java.util.LinkedHashMap<String,String>();
     var result=flow.execute("guarantee",java.util.Map.of(),bodyMap(body),query);
     return ResponseEntity.status(201).body(result);
   }
-  @Operation(summary="transactions",description="GET /api/v1/prestamos/{id}/transacciones; ver estados y ejemplos en JSON_CONTRACTS.md")
+  @Operation(summary="transactions",description="GET /api/v1/prestamos/{id}/transacciones")
   @GetMapping("/prestamos/{id}/transacciones")
   public ResponseEntity<Object> transactions(@PathVariable("id") String id) {
     var query=new java.util.LinkedHashMap<String,String>();
     var result=flow.execute("transactions",java.util.Map.of("id",id),java.util.Map.of(),query);
     return ResponseEntity.status(200).body(result);
   }
-  @Operation(summary="webhook",description="POST /api/v1/webhooks/mercado-pago; ver estados y ejemplos en JSON_CONTRACTS.md")
+  @Operation(summary="webhook",description="POST /api/v1/webhooks/mercado-pago")
   @PostMapping("/webhooks/mercado-pago")
   public ResponseEntity<Object> webhook(@Valid @RequestBody WebhookRequest body) {
     var query=new java.util.LinkedHashMap<String,String>();
