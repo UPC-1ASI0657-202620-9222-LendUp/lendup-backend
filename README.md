@@ -37,4 +37,4 @@ Con JDK 21 y Maven:
 
 Swagger UI: http://localhost:8080/swagger-ui.html
 
-Consulta [ENDPOINTS.md](ENDPOINTS.md) para las rutas y [JSON_CONTRACTS.md](JSON_CONTRACTS.md) para ejemplos de solicitudes. 
+Consulta [ENDPOINTS.md](ListadoEndpoints.md) para las rutas y [JSON_CONTRACTS.md](JSON_CONTRACTS.md) para ejemplos de solicitudes. 
