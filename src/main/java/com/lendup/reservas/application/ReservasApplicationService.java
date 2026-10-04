@@ -43,8 +43,10 @@ public class ReservasApplicationService extends FlowSupport {
         var data=new LinkedHashMap<String,Object>();data.put("solicitud_id",id);data.put("agenda_id",agenda.get("id"));
         data.put("desde",req.get("desde"));data.put("hasta",req.get("hasta"));data.put("estado","CONFIRMADA");
         for(var k:List.of("tarifa_diaria","garantia_monetaria","moneda","lugar_intercambio","condiciones_uso","condiciones_entrega","condiciones_devolucion","condiciones_cancelacion")){
-          var val=req.get(k+"_aceptada");if(val==null)val=req.get(k+"_aceptado");if(val==null)val=req.get(k+"_aceptadas");
-          if(val!=null)data.put(k+"_acordada",val);
+          for(var suffix:List.of("_aceptada","_aceptado","_aceptadas")){
+            var val=req.get(k+suffix);
+            if(val!=null)data.put(k+suffix.replace("_aceptad","_acordad"),val);
+          }
         }
         var reservation=store.create("reservas",data);change("solicitudes",id,"estado","ACEPTADA");
         var loan=new LinkedHashMap<String,Object>();loan.put("reserva_id",reservation.get("id"));loan.put("publicacion_id",req.get("publicacion_id"));
