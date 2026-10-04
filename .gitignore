@@ -8,3 +8,4 @@ target/
 *service-account*.json
 *firebase*admin*.json
 "@ | Set-Content .gitignore
+docs/
