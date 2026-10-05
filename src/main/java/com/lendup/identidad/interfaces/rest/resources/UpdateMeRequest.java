@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 public record UpdateMeRequest(
   @Schema(description="nombre") String nombre,
   @Schema(description="universidad") String universidad,
-  @Schema(description="campus") String campus,
+  @Schema(description="Sede opcional, texto libre") @jakarta.validation.constraints.Size(max=150) String campus,
   @Schema(description="carrera") String carrera,
   @Schema(description="ciclo") Integer ciclo,
   @Schema(description="telefono") String telefono,

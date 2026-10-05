@@ -6,8 +6,8 @@ import jakarta.validation.constraints.NotNull;
 public record CreateUserRequest(
   @Schema(description="correo_institucional", example="ana@universidad.edu.pe", requiredMode=Schema.RequiredMode.REQUIRED) @NotBlank String correo_institucional,
   @Schema(description="nombre", requiredMode=Schema.RequiredMode.REQUIRED) @NotBlank String nombre,
-  @Schema(description="universidad", requiredMode=Schema.RequiredMode.REQUIRED) @NotBlank String universidad,
-  @Schema(description="campus", requiredMode=Schema.RequiredMode.REQUIRED) @NotBlank String campus,
+  @Schema(description="Detectada por el correo Firebase; el valor enviado se ignora") String universidad,
+  @Schema(description="Sede opcional, texto libre") @jakarta.validation.constraints.Size(max=150) String campus,
   @Schema(description="carrera", requiredMode=Schema.RequiredMode.REQUIRED) @NotBlank String carrera,
   @Schema(description="ciclo", requiredMode=Schema.RequiredMode.REQUIRED) @NotNull Integer ciclo,
   @Schema(description="telefono", requiredMode=Schema.RequiredMode.REQUIRED) @NotBlank String telefono,

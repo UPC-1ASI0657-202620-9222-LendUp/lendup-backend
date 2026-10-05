@@ -15,6 +15,7 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
   private final FirebaseAuth auth;
   public FirebaseTokenFilter(FirebaseAuth auth) { this.auth=auth; }
   @Override protected void doFilterInternal(HttpServletRequest req,HttpServletResponse res,FilterChain chain) throws ServletException,IOException {
+    if(req.getMethod().equals("GET")&&(req.getServletPath().equals("/api/v1/terminos")||req.getServletPath().equals("/api/v1/universidades"))){chain.doFilter(req,res);return;}
     var header=req.getHeader("Authorization");
     if(header!=null&&header.startsWith("Bearer ")) {
       com.google.firebase.auth.FirebaseToken token;

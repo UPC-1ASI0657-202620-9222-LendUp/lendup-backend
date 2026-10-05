@@ -408,3 +408,11 @@ CREATE TABLE IF NOT EXISTS `webhook_events` (
   `recibido_en` DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
   UNIQUE KEY `uq_webhook_proveedor_evento` (`proveedor`,`evento_proveedor_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS universidades (
+  codigo VARCHAR(30) PRIMARY KEY, nombre VARCHAR(150) NOT NULL, sigla VARCHAR(30) NOT NULL, activa BOOLEAN NOT NULL DEFAULT TRUE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+CREATE TABLE IF NOT EXISTS dominios_universidad (
+  dominio VARCHAR(253) PRIMARY KEY, universidad_codigo VARCHAR(30) NOT NULL, activo BOOLEAN NOT NULL DEFAULT TRUE,
+  CONSTRAINT fk_dominio_universidad FOREIGN KEY (universidad_codigo) REFERENCES universidades(codigo)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

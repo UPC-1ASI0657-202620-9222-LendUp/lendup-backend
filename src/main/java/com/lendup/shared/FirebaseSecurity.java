@@ -49,8 +49,9 @@ public class FirebaseSecurity {
       .sessionManagement(s->s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
       .exceptionHandling(e->e.authenticationEntryPoint((request,response,exception)->response.sendError(401,"Autenticación requerida")))
       .authorizeHttpRequests(a->a
+      .dispatcherTypeMatchers(jakarta.servlet.DispatcherType.ERROR).permitAll()
       .requestMatchers("/swagger-ui/**","/swagger-ui.html","/v3/api-docs/**").permitAll()
-      .requestMatchers(HttpMethod.GET,"/api/v1/terminos").permitAll()
+      .requestMatchers(HttpMethod.GET,"/api/v1/terminos","/api/v1/universidades").permitAll()
       .requestMatchers(HttpMethod.POST,"/api/v1/webhooks/mercado-pago").permitAll()
       .anyRequest().authenticated())
       .addFilterBefore(filter,UsernamePasswordAuthenticationFilter.class).build();

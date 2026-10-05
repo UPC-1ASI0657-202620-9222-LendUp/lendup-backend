@@ -4,6 +4,7 @@ import static org.mockito.Mockito.*;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseToken;
 import java.util.Map;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +23,15 @@ class FirebaseTokenFilterTest {
     new FirebaseTokenFilter(auth).doFilter(req,res,(a,b)->passed.set(true));
     assertEquals(status,res.getStatus());assertEquals(expected,passed.get());
     if(status==403)assertTrue(res.getContentAsString().contains("EMAIL_NOT_VERIFIED"));
+  }
+  @Test void publicDocumentsIgnoreInvalidSessions() throws Exception {
+    for(var path:List.of("/api/v1/terminos","/api/v1/universidades")){
+      var auth=mock(FirebaseAuth.class);
+      var req=new MockHttpServletRequest("GET",path);req.setServletPath(path);req.addHeader("Authorization","Bearer stale-token");
+      var res=new MockHttpServletResponse();var passed=new AtomicBoolean();
+      new FirebaseTokenFilter(auth).doFilter(req,res,(a,b)->passed.set(true));
+      assertTrue(passed.get());assertEquals(200,res.getStatus());verifyNoInteractions(auth);
+    }
   }
   @Test void unverifiedCannotUseApp() throws Exception {request("GET","/api/v1/objetos",false,403,false);}
   @Test void missingClaimCannotUseApp() throws Exception {request("GET","/api/v1/prestamos",null,403,false);}

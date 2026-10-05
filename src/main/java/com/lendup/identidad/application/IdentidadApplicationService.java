@@ -10,7 +10,8 @@ import org.springframework.http.HttpStatus;
 @Service
 public class IdentidadApplicationService extends FlowSupport {
   private final com.lendup.shared.TermsDocumentService terms;
-  public IdentidadApplicationService(IdentidadRepository store,JsonMapper mapper,com.lendup.shared.TermsDocumentService terms){super(store,mapper);this.terms=terms;}
+  private final com.lendup.shared.UniversityCatalogService universities;
+  public IdentidadApplicationService(IdentidadRepository store,JsonMapper mapper,com.lendup.shared.TermsDocumentService terms,com.lendup.shared.UniversityCatalogService universities){super(store,mapper);this.terms=terms;this.universities=universities;}
   @Transactional
   public Object execute(String a,Map<String,String> v,Map<String,Object>b,Map<String,String>q){
     String id=id(v);
@@ -22,11 +23,12 @@ public class IdentidadApplicationService extends FlowSupport {
         if(!store.list("usuarios","firebase_uid",uid()).isEmpty())throw new ResponseStatusException(HttpStatus.CONFLICT,"Usuario registrado");
         if(token==null||token.getEmail()==null||!token.getEmail().equalsIgnoreCase(string(b,"correo_institucional").trim()))
           throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"El correo debe coincidir con la cuenta Firebase");
+        var university=universities.resolve(token.getEmail());
         var role=store.list("roles","codigo","ESTUDIANTE");
         if(role.isEmpty())throw new ResponseStatusException(HttpStatus.CONFLICT,"Falta rol ESTUDIANTE");
         var u=store.create("usuarios",Map.of("firebase_uid",uid(),"correo_institucional",string(b,"correo_institucional"),
           "rol_id",role.getFirst().get("id"),"estado_verificacion",emailVerified?"VERIFICADO":"NO_VERIFICADO"));
-        var p=editable(b);p.put("usuario_id",u.get("id"));store.create("perfiles",p);return u;
+        var p=editable(b);p.put("universidad",university.id());p.put("campus",com.lendup.shared.UniversityCatalogService.campus(b.get("campus")));p.put("usuario_id",u.get("id"));store.create("perfiles",p);return u;
       }
       case "me":{
         var current=user();
@@ -35,7 +37,11 @@ public class IdentidadApplicationService extends FlowSupport {
         var profiles=store.list("perfiles","usuario_id",current.get("id"));
         return Map.of("usuario",current,"perfil",profiles.isEmpty()?Map.of():profiles.getFirst());
       }
-      case "updateMe":return store.update("perfiles",store.list("perfiles","usuario_id",userId()).getFirst().get("id").toString(),b);
+      case "updateMe":{
+        var changes=editable(b);changes.remove("universidad");
+        if(changes.containsKey("campus"))changes.put("campus",com.lendup.shared.UniversityCatalogService.campus(changes.get("campus")));
+        return store.update("perfiles",store.list("perfiles","usuario_id",userId()).getFirst().get("id").toString(),changes);
+      }
       case "verify":{
         var reference=string(b,"verificacion_referencia");
         if(reference.isBlank())throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Se requiere verificacion_referencia");
