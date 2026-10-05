@@ -33,9 +33,33 @@ public class CatalogoApplicationService extends FlowSupport {
         return a.equals("updatePublication")?store.updateTrusted("publicaciones",id,b):store.update("publicaciones",id,b);
       }
       case "availability":{
+        catalog.lockPublication(id);
         owns(store.get("publicaciones",id),"propietario_usuario_id");
         validPeriod(b);
+        if(catalog.availabilityOverlaps(id,null,b.get("desde"),b.get("hasta")))
+          throw new ResponseStatusException(HttpStatus.CONFLICT,"El intervalo se superpone con otra disponibilidad");
         return create("disponibilidades_publicacion",b,Map.of("publicacion_id",id));
+      }
+      case "listAvailability":{
+        owns(store.get("publicaciones",id),"propietario_usuario_id");
+        return catalog.availability(id);
+      }
+      case "updateAvailability":{
+        catalog.lockPublication(id);
+        owns(store.get("publicaciones",id),"propietario_usuario_id");
+        var slot=store.get("disponibilidades_publicacion",v.get("subid"));
+        if(!id.equals(Objects.toString(slot.get("publicacion_id"),"")))
+          throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Intervalo de disponibilidad no encontrado");
+        validPeriod(b);
+        if(catalog.availabilityOverlaps(id,v.get("subid"),b.get("desde"),b.get("hasta")))
+          throw new ResponseStatusException(HttpStatus.CONFLICT,"El intervalo se superpone con otra disponibilidad");
+        return store.update("disponibilidades_publicacion",v.get("subid"),b);
+      }
+      case "deleteAvailability":{
+        catalog.lockPublication(id);
+        owns(store.get("publicaciones",id),"propietario_usuario_id");
+        catalog.deleteAvailability(id,v.get("subid"));
+        return Map.of();
       }
       case "listPublications":return images.decorate(withAvailability(store.searchPublications(q)));
       case "publication":return images.decorate(withAvailability(store.get("publicaciones",id)));

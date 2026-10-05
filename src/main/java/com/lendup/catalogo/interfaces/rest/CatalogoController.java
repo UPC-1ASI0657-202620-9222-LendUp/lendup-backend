@@ -48,6 +48,24 @@ public class CatalogoController {
     var result=flow.execute("availability",java.util.Map.of("id",id),bodyMap(body),query);
     return ResponseEntity.status(201).body(result);
   }
+  @Operation(summary="listAvailability",description="GET /api/v1/objetos/{id}/disponibilidad")
+  @GetMapping("/objetos/{id}/disponibilidad")
+  public ResponseEntity<Object> listAvailability(@PathVariable("id") String id) {
+    var result=flow.execute("listAvailability",java.util.Map.of("id",id),java.util.Map.of(),java.util.Map.of());
+    return ResponseEntity.ok(result);
+  }
+  @Operation(summary="updateAvailability",description="PUT /api/v1/objetos/{id}/disponibilidad/{subid}")
+  @PutMapping("/objetos/{id}/disponibilidad/{subid}")
+  public ResponseEntity<Object> updateAvailability(@PathVariable("id") String id,@PathVariable("subid") String subid,@Valid @RequestBody AvailabilityRequest body) {
+    var result=flow.execute("updateAvailability",java.util.Map.of("id",id,"subid",subid),bodyMap(body),java.util.Map.of());
+    return ResponseEntity.ok(result);
+  }
+  @Operation(summary="deleteAvailability",description="DELETE /api/v1/objetos/{id}/disponibilidad/{subid}")
+  @DeleteMapping("/objetos/{id}/disponibilidad/{subid}")
+  public ResponseEntity<Void> deleteAvailability(@PathVariable("id") String id,@PathVariable("subid") String subid) {
+    flow.execute("deleteAvailability",java.util.Map.of("id",id,"subid",subid),java.util.Map.of(),java.util.Map.of());
+    return ResponseEntity.noContent().build();
+  }
   @Operation(summary="listPublications",description="GET /api/v1/objetos")
   @GetMapping("/objetos")
   public ResponseEntity<Object> listPublications(@RequestParam(value="nombre",required=false) String nombre, @RequestParam(value="categoria",required=false) String categoria, @RequestParam(value="campus",required=false) String campus, @RequestParam(value="desde",required=false) String desde, @RequestParam(value="hasta",required=false) String hasta) {

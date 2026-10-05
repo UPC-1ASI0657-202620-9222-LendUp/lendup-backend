@@ -56,6 +56,22 @@ public class Store implements PersistencePort {
       """;
     return db.queryForList(sql,Map.of("publication",publicationId));
   }
+  public void lockPublication(String publicationId){
+    db.queryForList("SELECT id FROM publicaciones WHERE id=:id FOR UPDATE",Map.of("id",publicationId));
+  }
+  public boolean availabilityOverlaps(String publicationId,String excludedId,Object from,Object to){
+    var p=new LinkedHashMap<String,Object>();
+    p.put("publication",publicationId);p.put("from",toSqlValue("desde",from));p.put("to",toSqlValue("hasta",to));
+    var sql=new StringBuilder("SELECT id FROM disponibilidades_publicacion WHERE publicacion_id=:publication AND desde<:to AND hasta>:from");
+    if(excludedId!=null&&!excludedId.isBlank()){sql.append(" AND id<>:excluded");p.put("excluded",excludedId);}
+    sql.append(" LIMIT 1");
+    return !db.queryForList(sql.toString(),p).isEmpty();
+  }
+  @Transactional
+  public void deleteAvailability(String publicationId,String availabilityId){
+    var affected=db.update("DELETE FROM disponibilidades_publicacion WHERE id=:id AND publicacion_id=:publication",Map.of("id",availabilityId,"publication",publicationId));
+    if(affected==0)throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Intervalo de disponibilidad no encontrado");
+  }
   public List<Map<String,Object>> searchPublications(Map<String,String> filters){
     var p=new LinkedHashMap<String,Object>();var sql=new StringBuilder("SELECT p.* FROM publicaciones p WHERE p.estado='ACTIVA'");
     if(filters.containsKey("nombre")&&!filters.get("nombre").isBlank()){
