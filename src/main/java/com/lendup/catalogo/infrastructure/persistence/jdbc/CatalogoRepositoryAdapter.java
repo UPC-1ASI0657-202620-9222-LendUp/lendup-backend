@@ -17,4 +17,5 @@ public class CatalogoRepositoryAdapter implements CatalogoRepository {
   public boolean overlaps(String agendaId,Object from,Object to){return store.overlaps(agendaId,from,to);}
   public boolean offered(String publicationId,Object from,Object to){return store.offered(publicationId,from,to);}
   public List<Map<String,Object>> searchPublications(Map<String,String> filters){return store.searchPublications(filters);}
+  public List<Map<String,Object>> availability(String publicationId){return store.availability(publicationId);}
 }

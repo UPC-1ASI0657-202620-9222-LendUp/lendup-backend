@@ -42,6 +42,20 @@ public class Store implements PersistencePort {
     var p=Map.of("publication",publicationId,"from",toSqlValue("desde",from),"to",toSqlValue("hasta",to));
     return !db.queryForList("SELECT id FROM disponibilidades_publicacion WHERE publicacion_id=:publication AND desde<=:from AND hasta>=:to LIMIT 1",p).isEmpty();
   }
+  public List<Map<String,Object>> availability(String publicationId){
+    var sql="""
+      SELECT d.id,d.desde,d.hasta,'DISPONIBLE' AS estado
+      FROM disponibilidades_publicacion d
+      WHERE d.publicacion_id=:publication
+      UNION ALL
+      SELECT NULL AS id,r.desde,r.hasta,'RESERVADA' AS estado
+      FROM reservas r
+      JOIN agendas_objeto a ON a.id=r.agenda_id
+      WHERE a.publicacion_id=:publication AND r.estado='CONFIRMADA'
+      ORDER BY desde
+      """;
+    return db.queryForList(sql,Map.of("publication",publicationId));
+  }
   public List<Map<String,Object>> searchPublications(Map<String,String> filters){
     var p=new LinkedHashMap<String,Object>();var sql=new StringBuilder("SELECT p.* FROM publicaciones p WHERE p.estado='ACTIVA'");
     if(filters.containsKey("nombre")&&!filters.get("nombre").isBlank()){

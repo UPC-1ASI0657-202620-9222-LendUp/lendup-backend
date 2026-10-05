@@ -38,10 +38,15 @@ public abstract class FlowSupport {
     var data=editable(b);data.putAll(extras);return store.create(t,data);
   }
   protected java.time.LocalDateTime now(){return java.time.LocalDateTime.now(java.time.Clock.systemUTC());}
+  private java.time.LocalDateTime parseDateTime(String value){
+    if(value.endsWith("Z")||value.matches(".*[+-][0-9]{2}:[0-9]{2}$"))
+      return java.time.OffsetDateTime.parse(value).withOffsetSameInstant(java.time.ZoneOffset.UTC).toLocalDateTime();
+    return java.time.LocalDateTime.parse(value);
+  }
   protected void validPeriod(Map<String,Object> body){
     try{
-      var from=java.time.LocalDateTime.parse(string(body,"desde"));
-      var to=java.time.LocalDateTime.parse(string(body,"hasta"));
+      var from=parseDateTime(string(body,"desde"));
+      var to=parseDateTime(string(body,"hasta"));
       if(!from.isBefore(to))throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"desde debe ser anterior a hasta");
     }catch(java.time.format.DateTimeParseException ex){
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Fechas inválidas: use yyyy-MM-ddTHH:mm:ss");
