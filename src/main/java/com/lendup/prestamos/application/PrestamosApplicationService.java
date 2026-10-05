@@ -25,7 +25,10 @@ public class PrestamosApplicationService extends FlowSupport {
       case "delivery":{
         var loan=participantLoan(id);owns(loan,"prestamista_usuario_id");
         if(!"RESERVADO".equals(loan.get("estado")))throw new ResponseStatusException(HttpStatus.CONFLICT,"Estado no permite entrega");
-        if(loan.get("pago_tarifa_confirmado_en")==null || Boolean.TRUE.equals(loan.get("garantia_requerida"))&&loan.get("garantia_constituida_en")==null)
+        var reservation=store.get("reservas",loan.get("reserva_id").toString());
+        var guaranteeAmount=reservation.get("garantia_monetaria_acordada");
+        var guaranteeRequired=guaranteeAmount!=null&&new java.math.BigDecimal(guaranteeAmount.toString()).signum()>0;
+        if(loan.get("pago_tarifa_confirmado_en")==null || guaranteeRequired&&loan.get("garantia_constituida_en")==null)
           throw new ResponseStatusException(HttpStatus.CONFLICT,"Falta confirmar el pago o la garantía");
         return store.update("prestamos",id,Map.of("estado","ENTREGA_REGISTRADA","entrega_registrada_en",java.time.LocalDateTime.now(java.time.Clock.systemUTC())));
       }

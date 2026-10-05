@@ -36,4 +36,11 @@ class ReservasApplicationServiceTest {
     ));
     assertFalse(snapshot.containsKey("garantia_monetaria_acordada"));
   }
+
+  @Test void onlyRequiresGuaranteeForAPositiveAmount(){
+    assertFalse(ReservasApplicationService.guaranteeRequired(null));
+    assertFalse(ReservasApplicationService.guaranteeRequired(BigDecimal.ZERO));
+    assertFalse(ReservasApplicationService.guaranteeRequired(new BigDecimal("0.00")));
+    assertTrue(ReservasApplicationService.guaranteeRequired(new BigDecimal("0.01")));
+  }
 }

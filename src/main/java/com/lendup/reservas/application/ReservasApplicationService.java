@@ -28,6 +28,11 @@ public class ReservasApplicationService extends FlowSupport {
     });
     return snapshot;
   }
+  static boolean guaranteeRequired(Object amount){
+    if(amount==null)return false;
+    try{return new java.math.BigDecimal(amount.toString()).signum()>0;}
+    catch(NumberFormatException ignored){return false;}
+  }
   @Transactional
   public Object execute(String a,Map<String,String> v,Map<String,Object>b,Map<String,String>q){
     String id=id(v);
@@ -66,7 +71,7 @@ public class ReservasApplicationService extends FlowSupport {
         loan.put("prestamista_usuario_id",req.get("prestamista_usuario_id"));loan.put("prestatario_usuario_id",req.get("prestatario_usuario_id"));
         loan.put("entrega_programada_en",req.get("desde"));loan.put("devolucion_original_en",req.get("hasta"));loan.put("devolucion_vigente_en",req.get("hasta"));
         loan.put("tarifa_diaria_acordada",req.get("tarifa_diaria_aceptada"));loan.put("moneda",req.get("moneda_aceptada"));
-        loan.put("garantia_requerida",req.get("garantia_monetaria_aceptada")!=null);
+        loan.put("garantia_requerida",guaranteeRequired(req.get("garantia_monetaria_aceptada")));
         store.create("prestamos",loan);
         notifyUser(req.get("prestatario_usuario_id"),"RESERVA",reservation.get("id").toString(),"Reserva confirmada","Tu solicitud fue aceptada");
         notifyUser(req.get("prestamista_usuario_id"),"RESERVA",reservation.get("id").toString(),"Reserva confirmada","Confirmaste una reserva");
