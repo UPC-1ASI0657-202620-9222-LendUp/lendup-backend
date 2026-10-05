@@ -4,20 +4,13 @@ import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.auth.oauth2.AccessToken;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import java.io.IOException;
 import java.util.Date;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.http.HttpMethod;
@@ -44,16 +37,7 @@ public class FirebaseSecurity {
     return FirebaseAuth.getInstance();
   }
   @Bean SecurityFilterChain security(HttpSecurity http,FirebaseAuth auth) throws Exception {
-    var filter=new OncePerRequestFilter(){
-      @Override protected void doFilterInternal(HttpServletRequest req,HttpServletResponse res,FilterChain chain) throws ServletException,IOException {
-        var h=req.getHeader("Authorization");
-        if(h!=null&&h.startsWith("Bearer "))try{
-          var token=auth.verifyIdToken(h.substring(7));
-          SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(token.getUid(),null,java.util.List.of()));
-        }catch(Exception ignored){res.sendError(401,"Token Firebase no válido");return;}
-        chain.doFilter(req,res);
-      }
-    };
+    var filter=new FirebaseTokenFilter(auth);
     return http.csrf(c->c.disable())
       .cors(c->c.configurationSource(request->{
         var cfg=new CorsConfiguration();

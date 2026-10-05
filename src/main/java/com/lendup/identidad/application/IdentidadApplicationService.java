@@ -13,17 +13,25 @@ public class IdentidadApplicationService extends FlowSupport {
   @Transactional
   public Object execute(String a,Map<String,String> v,Map<String,Object>b,Map<String,String>q){
     String id=id(v);
+    var details=org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getDetails();
+    var token=details instanceof com.google.firebase.auth.FirebaseToken value?value:null;
+    boolean emailVerified=token!=null&&Boolean.TRUE.equals(token.getClaims().get("email_verified"));
     switch(a){
       case "createUser": {
         if(!store.list("usuarios","firebase_uid",uid()).isEmpty())throw new ResponseStatusException(HttpStatus.CONFLICT,"Usuario registrado");
+        if(token==null||token.getEmail()==null||!token.getEmail().equalsIgnoreCase(string(b,"correo_institucional").trim()))
+          throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"El correo debe coincidir con la cuenta Firebase");
         var role=store.list("roles","codigo","ESTUDIANTE");
         if(role.isEmpty())throw new ResponseStatusException(HttpStatus.CONFLICT,"Falta rol ESTUDIANTE");
         var u=store.create("usuarios",Map.of("firebase_uid",uid(),"correo_institucional",string(b,"correo_institucional"),
-          "rol_id",role.getFirst().get("id"),"estado_verificacion","NO_VERIFICADO"));
+          "rol_id",role.getFirst().get("id"),"estado_verificacion",emailVerified?"VERIFICADO":"NO_VERIFICADO"));
         var p=editable(b);p.put("usuario_id",u.get("id"));store.create("perfiles",p);return u;
       }
       case "me":{
-        var current=user();var profiles=store.list("perfiles","usuario_id",current.get("id"));
+        var current=user();
+        if(emailVerified&&!"VERIFICADO".equals(current.get("estado_verificacion")))
+          current=store.update("usuarios",current.get("id").toString(),Map.of("estado_verificacion","VERIFICADO","verificado_en",now()));
+        var profiles=store.list("perfiles","usuario_id",current.get("id"));
         return Map.of("usuario",current,"perfil",profiles.isEmpty()?Map.of():profiles.getFirst());
       }
       case "updateMe":return store.update("perfiles",store.list("perfiles","usuario_id",userId()).getFirst().get("id").toString(),b);

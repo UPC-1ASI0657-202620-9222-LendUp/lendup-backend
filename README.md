@@ -150,3 +150,14 @@ El backend verifica el token y vincula su `uid` con el usuario registrado en MyS
 | PATCH | `/api/v1/notificaciones/{id}` |
 
 Las operaciones que dependen de proveedores externos de pagos, almacenamiento de archivos e IA todavía registran estados pendientes.
+## Verificación de correo obligatoria
+
+Antes de usar la API de la aplicación, el token de Firebase debe incluir `email_verified=true`.
+Las únicas rutas de onboarding que admiten una cuenta autenticada sin correo verificado son
+`POST /api/v1/estudiantes` y `GET /api/v1/estudiantes/me`. El webhook público conserva su comportamiento.
+El rechazo usa HTTP 403 y `error=EMAIL_NOT_VERIFIED`.
+
+La consulta del perfil sincroniza `estado_verificacion=VERIFICADO` y `verificado_en`
+solo desde el token validado por Firebase. El correo del registro debe coincidir con el del token.
+El frontend envía el enlace mediante Firebase, recarga el usuario y renueva el token tras abrirlo.
+Las cuentas existentes también deben verificar el correo antes de usar la aplicación.
