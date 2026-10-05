@@ -68,11 +68,13 @@ public class CatalogoController {
   }
   @Operation(summary="listPublications",description="GET /api/v1/objetos")
   @GetMapping("/objetos")
-  public ResponseEntity<Object> listPublications(@RequestParam(value="nombre",required=false) String nombre, @RequestParam(value="categoria",required=false) String categoria, @RequestParam(value="campus",required=false) String campus, @RequestParam(value="desde",required=false) String desde, @RequestParam(value="hasta",required=false) String hasta) {
+  public ResponseEntity<Object> listPublications(@RequestParam(value="nombre",required=false) String nombre, @RequestParam(value="categoria",required=false) String categoria, @RequestParam(value="universidad",required=false) String universidad, @RequestParam(value="campus",required=false) String campus, @RequestParam(value="ubicacion",required=false) String ubicacion, @RequestParam(value="desde",required=false) String desde, @RequestParam(value="hasta",required=false) String hasta) {
     var query=new java.util.LinkedHashMap<String,String>();
     if(nombre!=null)query.put("nombre",nombre);
     if(categoria!=null)query.put("categoria",categoria);
+    if(universidad!=null)query.put("universidad",universidad);
     if(campus!=null)query.put("campus",campus);
+    if(ubicacion!=null)query.put("ubicacion",ubicacion);
     if(desde!=null)query.put("desde",desde);
     if(hasta!=null)query.put("hasta",hasta);
     var result=flow.execute("listPublications",java.util.Map.of(),java.util.Map.of(),query);

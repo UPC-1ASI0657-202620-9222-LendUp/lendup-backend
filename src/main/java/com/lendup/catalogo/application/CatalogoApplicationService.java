@@ -19,7 +19,13 @@ public class CatalogoApplicationService extends FlowSupport {
     return result;
   }
   private List<Map<String,Object>> withAvailability(List<Map<String,Object>> publications){
-    return publications.stream().map(this::withAvailability).toList();
+    var ids=publications.stream().map(publication->publication.get("id").toString()).toList();
+    var availability=catalog.availabilityForPublications(ids);
+    return publications.stream().map(publication->{
+      var result=new LinkedHashMap<String,Object>(publication);
+      result.put("disponibilidades",availability.getOrDefault(publication.get("id").toString(),List.of()));
+      return (Map<String,Object>)result;
+    }).toList();
   }
   @Transactional
   public Object execute(String a,Map<String,String> v,Map<String,Object>b,Map<String,String>q){

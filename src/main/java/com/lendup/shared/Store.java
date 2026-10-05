@@ -56,6 +56,27 @@ public class Store implements PersistencePort {
       """;
     return db.queryForList(sql,Map.of("publication",publicationId));
   }
+  public Map<String,List<Map<String,Object>>> availabilityForPublications(Collection<String> publicationIds){
+    if(publicationIds.isEmpty())return Map.of();
+    var sql="""
+      SELECT d.publicacion_id,d.id,d.desde,d.hasta,'DISPONIBLE' AS estado
+      FROM disponibilidades_publicacion d
+      WHERE d.publicacion_id IN (:publications)
+      UNION ALL
+      SELECT a.publicacion_id,NULL AS id,r.desde,r.hasta,'RESERVADA' AS estado
+      FROM reservas r
+      JOIN agendas_objeto a ON a.id=r.agenda_id
+      WHERE a.publicacion_id IN (:publications) AND r.estado='CONFIRMADA'
+      ORDER BY publicacion_id,desde
+      """;
+    var grouped=new LinkedHashMap<String,List<Map<String,Object>>>();
+    for(var row:db.queryForList(sql,Map.of("publications",publicationIds))){
+      var publicationId=Objects.toString(row.get("publicacion_id"),"");
+      var slot=new LinkedHashMap<>(row);slot.remove("publicacion_id");
+      grouped.computeIfAbsent(publicationId,ignored->new ArrayList<>()).add(slot);
+    }
+    return grouped;
+  }
   public void lockPublication(String publicationId){
     db.queryForList("SELECT id FROM publicaciones WHERE id=:id FOR UPDATE",Map.of("id",publicationId));
   }
@@ -73,22 +94,44 @@ public class Store implements PersistencePort {
     if(affected==0)throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Intervalo de disponibilidad no encontrado");
   }
   public List<Map<String,Object>> searchPublications(Map<String,String> filters){
-    var p=new LinkedHashMap<String,Object>();var sql=new StringBuilder("SELECT p.* FROM publicaciones p WHERE p.estado='ACTIVA'");
-    if(filters.containsKey("nombre")&&!filters.get("nombre").isBlank()){
-      sql.append(" AND LOWER(p.titulo) LIKE :nombre");p.put("nombre","%"+filters.get("nombre").toLowerCase()+"%");
+    var p=new LinkedHashMap<String,Object>();
+    var sql=new StringBuilder("SELECT p.* FROM publicaciones p JOIN categorias c ON c.id=p.categoria_id WHERE p.estado='ACTIVA' AND c.activa=TRUE");
+    var name=filters.getOrDefault("nombre","").trim().toLowerCase(Locale.ROOT);
+    if(!name.isBlank()){
+      var words=name.split("\\s+");
+      for(var i=0;i<words.length;i++){
+        sql.append(" AND LOCATE(:nombre").append(i).append(",LOWER(CONCAT_WS(' ',p.titulo,p.descripcion,c.nombre,c.codigo)))>0");
+        p.put("nombre"+i,words[i]);
+      }
     }
-    if(filters.containsKey("categoria")&&!filters.get("categoria").isBlank()){
-      sql.append(" AND p.categoria_id=:categoria");p.put("categoria",filters.get("categoria"));
+    var category=filters.getOrDefault("categoria","").trim();
+    if(!category.isBlank()){
+      sql.append(" AND (p.categoria_id=:categoria OR UPPER(c.codigo)=UPPER(:categoria))");p.put("categoria",category);
     }
-    if(filters.containsKey("campus")&&!filters.get("campus").isBlank()){
-      sql.append(" AND p.campus=:campus");p.put("campus",filters.get("campus"));
+    var university=filters.getOrDefault("universidad","").trim();
+    if(!university.isBlank()){
+      sql.append(" AND LOWER(p.universidad)=LOWER(:universidad)");p.put("universidad",university);
     }
-    if(filters.containsKey("desde")&&filters.containsKey("hasta")){
-      p.put("desde",toSqlValue("desde",filters.get("desde")));p.put("hasta",toSqlValue("hasta",filters.get("hasta")));
+    var campus=filters.getOrDefault("campus","").trim();
+    if(!campus.isBlank()){
+      sql.append(" AND LOWER(p.campus)=LOWER(:campus)");p.put("campus",campus);
+    }
+    var location=filters.getOrDefault("ubicacion","").trim().toLowerCase(Locale.ROOT);
+    if(!location.isBlank()){
+      sql.append(" AND LOCATE(:ubicacion,LOWER(p.ubicacion))>0");p.put("ubicacion",location);
+    }
+    var hasFrom=filters.containsKey("desde")&&!filters.get("desde").isBlank();
+    var hasTo=filters.containsKey("hasta")&&!filters.get("hasta").isBlank();
+    if(hasFrom!=hasTo)throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"desde y hasta deben enviarse juntos");
+    if(hasFrom){
+      var from=(LocalDateTime)toSqlValue("desde",filters.get("desde"));
+      var to=(LocalDateTime)toSqlValue("hasta",filters.get("hasta"));
+      if(!from.isBefore(to))throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"desde debe ser anterior a hasta");
+      p.put("desde",from);p.put("hasta",to);
       sql.append(" AND EXISTS (SELECT 1 FROM disponibilidades_publicacion d WHERE d.publicacion_id=p.id AND d.desde<=:desde AND d.hasta>=:hasta)");
       sql.append(" AND NOT EXISTS (SELECT 1 FROM reservas r JOIN agendas_objeto a ON r.agenda_id=a.id WHERE a.publicacion_id=p.id AND r.estado='CONFIRMADA' AND r.desde<:hasta AND r.hasta>:desde)");
     }
-    sql.append(" ORDER BY p.creado_en DESC LIMIT 200");return db.queryForList(sql.toString(),p);
+    sql.append(" ORDER BY p.creado_en DESC,p.id DESC LIMIT 200");return db.queryForList(sql.toString(),p);
   }
   @Transactional
   public Map<String,Object> create(String t,Map<String,Object> input){check(t);

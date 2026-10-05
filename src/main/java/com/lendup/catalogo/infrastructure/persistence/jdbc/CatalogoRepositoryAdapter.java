@@ -3,6 +3,7 @@ import com.lendup.catalogo.domain.repositories.CatalogoRepository;
 import com.lendup.shared.Store;
 import java.util.List;
 import java.util.Map;
+import java.util.Collection;
 import org.springframework.stereotype.Repository;
 @Repository
 public class CatalogoRepositoryAdapter implements CatalogoRepository {
@@ -18,6 +19,7 @@ public class CatalogoRepositoryAdapter implements CatalogoRepository {
   public boolean offered(String publicationId,Object from,Object to){return store.offered(publicationId,from,to);}
   public List<Map<String,Object>> searchPublications(Map<String,String> filters){return store.searchPublications(filters);}
   public List<Map<String,Object>> availability(String publicationId){return store.availability(publicationId);}
+  public Map<String,List<Map<String,Object>>> availabilityForPublications(Collection<String> publicationIds){return store.availabilityForPublications(publicationIds);}
   public void lockPublication(String publicationId){store.lockPublication(publicationId);}
   public boolean availabilityOverlaps(String publicationId,String excludedId,Object from,Object to){return store.availabilityOverlaps(publicationId,excludedId,from,to);}
   public void deleteAvailability(String publicationId,String availabilityId){store.deleteAvailability(publicationId,availabilityId);}
