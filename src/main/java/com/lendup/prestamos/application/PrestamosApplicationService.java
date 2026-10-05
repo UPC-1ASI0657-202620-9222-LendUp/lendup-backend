@@ -9,7 +9,8 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
 @Service
 public class PrestamosApplicationService extends FlowSupport {
-  public PrestamosApplicationService(PrestamosRepository store,JsonMapper mapper){super(store,mapper);}
+  private final org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate db;
+  public PrestamosApplicationService(PrestamosRepository store,JsonMapper mapper,org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate db){super(store,mapper);this.db=db;}
   @Transactional
   public Object execute(String a,Map<String,String> v,Map<String,Object>b,Map<String,String>q){
     String id=id(v);
@@ -40,6 +41,8 @@ public class PrestamosApplicationService extends FlowSupport {
         return store.update("prestamos",id,Map.of("estado","DEVOLUCION_REGISTRADA","devolucion_registrada_en",java.time.LocalDateTime.now(java.time.Clock.systemUTC())));
       }
       case "confirmReturn":{
+        participantLoan(id);
+        db.queryForList("SELECT id FROM prestamos WHERE id=:id FOR UPDATE",Map.of("id",id));
         var loan=participantLoan(id);owns(loan,"prestamista_usuario_id");
         if(!"DEVOLUCION_REGISTRADA".equals(loan.get("estado"))||((Number)loan.get("incidencias_pendientes")).intValue()>0)
           throw new ResponseStatusException(HttpStatus.CONFLICT,"Devolución o incidencias pendientes");

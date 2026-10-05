@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.*;
 public class EvidenciasController {
   private final EvidenciasApplicationService flow;
   private final JsonMapper mapper;
-  public EvidenciasController(EvidenciasApplicationService flow,JsonMapper mapper){this.flow=flow;this.mapper=mapper;}
+  private final com.lendup.shared.IncidentsService incidents;
+  public EvidenciasController(EvidenciasApplicationService flow,JsonMapper mapper,com.lendup.shared.IncidentsService incidents){this.flow=flow;this.mapper=mapper;this.incidents=incidents;}
   private Map<String,Object> bodyMap(Object body){
     var converted=mapper.convertValue(body,new tools.jackson.core.type.TypeReference<Map<String,Object>>(){});
     converted.values().removeIf(java.util.Objects::isNull);
@@ -35,17 +36,17 @@ public class EvidenciasController {
     return ResponseEntity.status(201).body(result);
   }
   @Operation(summary="incident",description="POST /api/v1/incidencias")
-  @PostMapping("/incidencias")
+  @PostMapping(value="/incidencias",consumes="application/json")
   public ResponseEntity<Object> incident(@Valid @RequestBody IncidentRequest body) {
     var query=new java.util.LinkedHashMap<String,String>();
-    var result=flow.execute("incident",java.util.Map.of(),bodyMap(body),query);
+    var result=incidents.report(bodyMap(body),java.util.List.of());
     return ResponseEntity.status(201).body(result);
   }
   @Operation(summary="incidentById",description="GET /api/v1/incidencias/{id}")
   @GetMapping("/incidencias/{id}")
   public ResponseEntity<Object> incidentById(@PathVariable("id") String id) {
     var query=new java.util.LinkedHashMap<String,String>();
-    var result=flow.execute("incidentById",java.util.Map.of("id",id),java.util.Map.of(),query);
+    var result=incidents.detail(id);
     return ResponseEntity.status(200).body(result);
   }
   @Operation(summary="adminIncidents",description="GET /api/v1/admin/incidencias")
@@ -54,14 +55,28 @@ public class EvidenciasController {
     var query=new java.util.LinkedHashMap<String,String>();
     if(estado!=null)query.put("estado",estado);
     if(tipo!=null)query.put("tipo",tipo);
-    var result=flow.execute("adminIncidents",java.util.Map.of(),java.util.Map.of(),query);
+    var result=incidents.list(true,query);
     return ResponseEntity.status(200).body(result);
   }
   @Operation(summary="resolve",description="POST /api/v1/admin/incidencias/{id}/resolucion")
   @PostMapping("/admin/incidencias/{id}/resolucion")
   public ResponseEntity<Object> resolve(@PathVariable("id") String id, @Valid @RequestBody ResolveRequest body) {
     var query=new java.util.LinkedHashMap<String,String>();
-    var result=flow.execute("resolve",java.util.Map.of("id",id),bodyMap(body),query);
+    var result=incidents.resolve(id,bodyMap(body));
     return ResponseEntity.status(200).body(result);
   }
+  @GetMapping("/incidencias")
+  public Object listIncidents() {return incidents.list(false,Map.of());}
+  @PostMapping(value="/incidencias",consumes="multipart/form-data")
+  public ResponseEntity<Object> reportWithPhotos(@RequestPart("reporte") @Valid IncidentRequest body,
+      @RequestPart(value="fotos",required=false) java.util.List<org.springframework.web.multipart.MultipartFile> photos) {
+    return ResponseEntity.status(201).body(incidents.report(bodyMap(body),photos==null?java.util.List.of():photos));
+  }
+  public record ContentRequest(@jakarta.validation.constraints.NotBlank @jakarta.validation.constraints.Size(max=10000) String contenido) {}
+  @PostMapping("/incidencias/{id}/descargo")
+  public Object statement(@PathVariable String id,@Valid @RequestBody ContentRequest body) {return incidents.statement(id,bodyMap(body));}
+  @PostMapping("/admin/incidencias/{id}/revision")
+  public Object review(@PathVariable String id) {return incidents.review(id);}
+  @PostMapping("/admin/incidencias/{id}/observaciones")
+  public Object note(@PathVariable String id,@Valid @RequestBody ContentRequest body) {return incidents.note(id,bodyMap(body));}
 }
