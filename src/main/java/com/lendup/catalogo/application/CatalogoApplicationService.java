@@ -10,7 +10,8 @@ import org.springframework.http.HttpStatus;
 @Service
 public class CatalogoApplicationService extends FlowSupport {
   private final com.lendup.shared.TermsDocumentService terms;
-  public CatalogoApplicationService(CatalogoRepository store,JsonMapper mapper,com.lendup.shared.TermsDocumentService terms){super(store,mapper);this.terms=terms;}
+  private final com.lendup.shared.PublicationImagesService images;
+  public CatalogoApplicationService(CatalogoRepository store,JsonMapper mapper,com.lendup.shared.TermsDocumentService terms,com.lendup.shared.PublicationImagesService images){super(store,mapper);this.terms=terms;this.images=images;}
   @Transactional
   public Object execute(String a,Map<String,String> v,Map<String,Object>b,Map<String,String>q){
     String id=id(v);
@@ -27,8 +28,8 @@ public class CatalogoApplicationService extends FlowSupport {
         validPeriod(b);
         return create("disponibilidades_publicacion",b,Map.of("publicacion_id",id));
       }
-      case "listPublications":return store.searchPublications(q);
-      case "publication":return store.get("publicaciones",id);
+      case "listPublications":return images.decorate(store.searchPublications(q));
+      case "publication":return images.decorate(store.get("publicaciones",id));
       case "termsDocument":return terms.document();
       default:throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Acción desconocida");
     }
