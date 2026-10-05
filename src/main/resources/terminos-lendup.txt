@@ -1,0 +1,189 @@
+Términos y Condiciones de LendUp
+1. Qué es LendUp
+LendUp es una plataforma web que facilita el alquiler temporal de objetos entre estudiantes universitarios. La plataforma permite publicar objetos, consultar su disponibilidad, enviar solicitudes, confirmar reservas, gestionar pagos y garantías, registrar entregas y devoluciones, aportar evidencias, reportar incidencias y calificar las operaciones finalizadas.
+LendUp facilita la interacción y gestión de la operación, pero el acuerdo sobre el uso temporal de cada objeto se establece entre el estudiante que lo ofrece y el estudiante que lo solicita.
+Dentro de una operación, un estudiante puede actuar como prestamista al ofrecer un objeto o como prestatario al solicitarlo. Estas denominaciones representan funciones dentro de una operación y no roles permanentes de acceso a la plataforma.
+Los roles de acceso de LendUp son Estudiante y Administrador.
+2. Registro, acceso y cuenta
+Para utilizar las funcionalidades de LendUp, el usuario debe registrar una cuenta proporcionando información verdadera, actualizada y suficiente para operar dentro de la plataforma.
+Cuando se solicite la verificación de un correo institucional, esta únicamente confirma que el usuario posee acceso a dicha cuenta de correo. La verificación no representa una certificación de identidad, matrícula vigente ni respaldo por parte de la universidad correspondiente.
+El usuario es responsable de:
+• Mantener seguras sus credenciales de acceso.
+• No compartir su cuenta con terceros.
+• Mantener actualizada la información asociada a su perfil.
+• Comunicar cualquier acceso o actividad no autorizada que detecte.
+• No suplantar a otras personas ni proporcionar información deliberadamente falsa.
+La autenticación podrá ser gestionada mediante proveedores externos de identidad utilizados por LendUp.
+3. Publicación de objetos
+El estudiante que publique un objeto declara que es su propietario o que cuenta con autorización suficiente para ofrecerlo temporalmente.
+Toda publicación debe proporcionar información clara y razonablemente completa sobre:
+• Nombre y descripción del objeto.
+• Estado y funcionamiento.
+• Accesorios incluidos.
+• Tarifa diaria.
+• Disponibilidad ofrecida.
+• Condiciones de uso.
+• Lugar o condiciones de intercambio cuando corresponda.
+• Defectos, limitaciones o características relevantes para su utilización.
+Las publicaciones de LendUp corresponden a alquileres temporales con tarifa. La tarifa diaria establecida debe ser mayor que cero.
+Está prohibida la publicación de objetos robados, ilegales, peligrosos, falsificados o cuyo uso, posesión o transferencia pueda vulnerar derechos de terceros o las normas aplicables.
+LendUp podrá retirar publicaciones que incumplan estas condiciones.
+4. Disponibilidad, solicitudes y reservas
+La disponibilidad publicada representa los periodos en los que el propietario ofrece inicialmente el objeto. Sin embargo, la disponibilidad efectiva puede modificarse como resultado de reservas ya confirmadas.
+El envío de una solicitud no constituye una reserva confirmada.
+Una solicitud deberá ser aceptada por el propietario del objeto antes de continuar con el proceso de confirmación.
+Antes de confirmar una reserva, las partes deben poder conocer las condiciones relevantes de la operación, incluyendo:
+• Objeto solicitado.
+• Fecha y hora de inicio.
+• Fecha y hora de devolución.
+• Tarifa aplicable.
+• Importe estimado del alquiler.
+• Garantía monetaria.
+• Lugar de intercambio.
+• Accesorios incluidos.
+• Condiciones de uso y devolución.
+Cuando una reserva sea confirmada, sus condiciones quedan asociadas a esa operación. Una modificación posterior realizada sobre la publicación del objeto no modifica automáticamente una reserva previamente confirmada.
+LendUp deberá volver a comprobar la disponibilidad correspondiente antes de confirmar definitivamente una reserva.
+5. Tarifas y cálculo del alquiler
+Los alquileres realizados mediante LendUp están sujetos a una tarifa.
+Cuando se utilice una tarifa diaria, el importe del alquiler se calcula por cada bloque de 24 horas iniciado durante el periodo acordado.
+Antes del pago, el usuario deberá poder consultar el importe correspondiente y su desglose.
+El importe podrá considerar, según corresponda:
+• Tarifa del alquiler.
+• Número de bloques de 24 horas aplicables.
+• Garantía monetaria.
+• Comisiones u otros cargos previamente informados.
+No deberán aplicarse cargos que no hayan sido mostrados al usuario antes de su aceptación.
+6. Pagos y garantía monetaria
+Los pagos y garantías podrán procesarse mediante un proveedor externo de servicios de pago, como Mercado Pago.
+LendUp no deberá almacenar directamente información financiera sensible que sea gestionada por el proveedor de pago, como datos completos de tarjetas u otros medios de pago.
+La garantía monetaria es independiente del precio correspondiente al alquiler y tiene como finalidad respaldar posibles incidencias relacionadas con la operación.
+La existencia de una reclamación no implica automáticamente la retención total o parcial de la garantía.
+Cuando exista una incidencia, cualquier decisión relacionada con la garantía deberá considerar la información disponible, las condiciones previamente acordadas y las evidencias aportadas por las partes.
+Las políticas y plazos aplicables a pagos, devoluciones, reembolsos y garantías deberán encontrarse disponibles antes de que el usuario confirme la operación correspondiente.
+7. Entrega y confirmación de recepción
+Durante la entrega, ambas partes deben comprobar el estado del objeto y los accesorios incluidos.
+El estudiante que recibe el objeto deberá revisar razonablemente su estado y funcionamiento antes de confirmar la recepción.
+La confirmación de recepción indica que el objeto fue entregado y permite continuar con el ciclo de vida del préstamo dentro de la plataforma.
+Si el objeto presenta diferencias relevantes respecto de la publicación o de las condiciones acordadas, el usuario deberá registrarlas mediante los mecanismos de evidencia o incidencia disponibles antes de continuar cuando sea posible.
+Se recomienda registrar evidencias suficientes de la entrega, como fotografías, videos u observaciones.
+Las evidencias no deben incluir información personal de terceros que no resulte necesaria para documentar la operación.
+8. Uso del objeto
+El estudiante que recibe temporalmente un objeto se compromete a:
+• Utilizarlo de acuerdo con las condiciones acordadas.
+• Adoptar medidas razonables para conservarlo.
+• No venderlo, cederlo ni entregarlo a terceros sin autorización.
+• No modificarlo de manera permanente sin autorización.
+• No utilizarlo para actividades ilegales o distintas de las autorizadas.
+• Conservar los accesorios recibidos.
+• Devolverlo dentro del periodo y condiciones establecidos.
+El usuario será responsable de informar cualquier incidente relevante que ocurra mientras el objeto permanezca bajo su responsabilidad.
+9. Extensiones y reprogramaciones
+Una solicitud de extensión o reprogramación no modifica automáticamente las condiciones vigentes.
+Cualquier cambio en el periodo de préstamo deberá ser solicitado mediante la plataforma y requerirá la aceptación de la contraparte cuando corresponda.
+Antes de confirmar una extensión o reprogramación, LendUp podrá verificar nuevamente la disponibilidad del objeto.
+Cuando la modificación implique tiempo adicional sujeto a cobro, el sistema deberá mostrar el importe correspondiente antes de su confirmación.
+Hasta que una modificación sea aceptada y registrada, continúan vigentes las condiciones previamente confirmadas.
+10. Devolución del objeto
+Al finalizar el periodo acordado, el prestatario deberá devolver el objeto junto con los accesorios incluidos.
+El prestamista deberá revisar la devolución y confirmar su recepción mediante la plataforma.
+La confirmación de devolución permitirá completar el préstamo, salvo que exista una incidencia pendiente que requiera revisión.
+Las partes podrán registrar fotografías, videos y observaciones relacionadas con el estado del objeto durante la devolución.
+11. Cancelaciones
+Las cancelaciones deberán realizarse mediante los mecanismos habilitados por LendUp.
+Sus efectos económicos dependerán de la política de cancelación aplicable y de la etapa en la que se encuentre la operación.
+Las condiciones relacionadas con cargos, devoluciones o reembolsos deberán mostrarse antes de que el usuario confirme una operación cuando resulten aplicables.
+Una cancelación no deberá modificar retroactivamente condiciones que ya hayan producido efectos, salvo que corresponda según la política informada o la resolución de una incidencia.
+12. Evidencias e incidencias
+Cuando exista un daño, pérdida, retraso, incumplimiento o desacuerdo relevante, cualquiera de las partes podrá registrar una incidencia.
+Las partes podrán aportar:
+• Fotografías.
+• Videos.
+• Observaciones.
+• Información relacionada con la entrega o devolución.
+• Otros antecedentes permitidos por la plataforma.
+Las evidencias deberán guardar relación con la operación y no deberán ser manipuladas deliberadamente.
+La revisión de una incidencia deberá considerar, cuando corresponda, las versiones y evidencias aportadas por ambas partes.
+La resolución final de las incidencias corresponde al rol Administrador de LendUp.
+13. Uso de inteligencia artificial en incidencias
+LendUp podrá utilizar herramientas de inteligencia artificial para apoyar el análisis de evidencias asociadas a una incidencia.
+Los resultados generados por estos mecanismos tienen carácter orientativo y sirven únicamente como información de apoyo para la revisión.
+La inteligencia artificial no determinará automáticamente:
+• La responsabilidad definitiva de un usuario.
+• La retención de una garantía.
+• El importe definitivo de una compensación.
+• La suspensión de una cuenta.
+La decisión final deberá ser realizada mediante el proceso de revisión definido por LendUp.
+14. Calificaciones y reputación
+Después de finalizar correctamente un préstamo, cada una de las partes podrá emitir una única calificación sobre su contraparte.
+Las calificaciones deberán:
+• Corresponder a una operación realmente realizada.
+• Basarse en la experiencia de la operación.
+• Expresarse de forma respetuosa y honesta.
+• No incluir datos personales innecesarios.
+• No contener amenazas, discriminación, hostigamiento o información deliberadamente falsa.
+Una vez registrada una calificación, no podrá emitirse una segunda calificación sobre la misma contraparte para la misma operación, salvo que la plataforma establezca expresamente un mecanismo de modificación.
+15. Comunicación entre las partes
+LendUp no proporciona necesariamente un servicio interno de mensajería entre estudiantes.
+Cuando una reserva se encuentre confirmada o un préstamo se encuentre vigente, la plataforma podrá mostrar información de contacto necesaria para facilitar la coordinación de la entrega o devolución.
+El número telefónico u otra información de contacto no deberá permanecer visible fuera del periodo en el que exista una operación confirmada o activa, salvo que exista otra finalidad legítima previamente informada.
+Los usuarios no deben utilizar los datos obtenidos mediante LendUp para finalidades ajenas a la operación correspondiente.
+16. Notificaciones y recordatorios
+LendUp podrá enviar notificaciones relacionadas con las operaciones realizadas dentro de la plataforma.
+Estas podrán incluir información sobre:
+• Solicitudes recibidas.
+• Aceptación o rechazo de solicitudes.
+• Confirmaciones de reserva.
+• Pagos.
+• Próximas entregas o devoluciones.
+• Extensiones o reprogramaciones.
+• Incidencias.
+• Calificaciones pendientes.
+Los recordatorios tienen una finalidad informativa y no sustituyen la responsabilidad del usuario de cumplir las fechas y condiciones acordadas.
+Algunas notificaciones podrán enviarse mediante correo electrónico u otros canales habilitados por la plataforma.
+17. Ubicación y mapas
+LendUp podrá utilizar información de ubicación para facilitar la publicación, búsqueda o coordinación de objetos.
+Cuando se utilicen servicios externos de mapas o geolocalización, el tratamiento técnico de determinada información podrá depender también de las condiciones del proveedor correspondiente.
+La información de ubicación mostrada por la plataforma no debe interpretarse como una garantía sobre la seguridad de un punto de encuentro.
+Las partes deberán seleccionar lugares razonables y seguros para realizar intercambios.
+18. Conducta y usos prohibidos
+Los usuarios deben utilizar LendUp de manera legítima y respetuosa.
+No está permitido:
+• Cometer fraude o intentar obtener beneficios mediante información falsa.
+• Manipular publicaciones, pagos, evidencias o calificaciones.
+• Amenazar, acosar o discriminar a otros usuarios.
+• Suplantar identidades.
+• Utilizar información personal obtenida en LendUp para finalidades ajenas a una operación.
+• Intentar acceder sin autorización a cuentas, datos o componentes técnicos de la plataforma.
+• Utilizar LendUp para actividades ilegales.
+LendUp podrá restringir o suspender cuentas cuando existan incumplimientos, riesgos de seguridad o indicios razonables de uso indebido.
+Cuando corresponda, el usuario deberá poder conocer el motivo general de la medida y disponer de un mecanismo para solicitar su revisión.
+19. Servicios de terceros
+Para proporcionar determinadas funcionalidades, LendUp podrá utilizar servicios de terceros relacionados con autenticación, procesamiento de pagos, almacenamiento de archivos, mapas, correo electrónico o análisis automatizado.
+El uso de estos proveedores no implica que LendUp pueda utilizar de manera ilimitada la información procesada por ellos.
+Los proveedores utilizados y las finalidades relacionadas con el tratamiento de información personal deberán ser identificados en la Política de Privacidad de LendUp.
+20. Privacidad y tratamiento de datos
+El tratamiento de información personal se describirá en una Política de Privacidad independiente.
+Dicha política deberá explicar, entre otros aspectos:
+• Quién es responsable del tratamiento.
+• Qué información se recopila.
+• Para qué se utiliza.
+• Qué proveedores externos intervienen.
+• Durante cuánto tiempo se conserva.
+• Qué información puede mostrarse a otros usuarios.
+• Cómo puede el usuario ejercer los derechos que le correspondan.
+La aceptación de estos Términos y Condiciones no constituye una autorización ilimitada para recopilar, utilizar, compartir o conservar información personal.
+21. Alcance y limitaciones de LendUp
+LendUp proporciona la infraestructura tecnológica necesaria para facilitar y registrar operaciones entre usuarios.
+LendUp no inspecciona físicamente cada objeto publicado ni garantiza que todas las afirmaciones realizadas por un usuario sean correctas.
+La descripción inicial del objeto es responsabilidad de quien lo publica.
+LendUp podrá aplicar mecanismos de validación, evidencia, reputación y resolución de incidencias, pero estos mecanismos no eliminan la responsabilidad de los usuarios respecto de sus propias actuaciones.
+Las limitaciones establecidas en estos términos no afectan las obligaciones que correspondan a LendUp respecto del servicio tecnológico ofrecido ni los derechos que correspondan a los usuarios conforme a la normativa aplicable.
+22. Disponibilidad de la plataforma
+LendUp procurará mantener sus servicios disponibles, pero podrán producirse interrupciones temporales debido a mantenimiento, actualizaciones, fallos técnicos, servicios de terceros u otras circunstancias operativas.
+Cuando resulte posible, las operaciones críticas deberán conservar un estado que permita continuar o revisar posteriormente el proceso afectado.
+LendUp no garantiza disponibilidad ininterrumpida del servicio.
+23. Modificaciones de los términos
+LendUp podrá actualizar estos Términos y Condiciones cuando existan cambios funcionales, técnicos, operativos o normativos que lo requieran.
+Cuando los cambios sean relevantes, deberán comunicarse indicando una nueva versión y su fecha de vigencia.
+Una modificación posterior de estos términos no deberá alterar retroactivamente las condiciones particulares ya confirmadas para una operación, salvo que sea necesario por una obligación legal aplicable.

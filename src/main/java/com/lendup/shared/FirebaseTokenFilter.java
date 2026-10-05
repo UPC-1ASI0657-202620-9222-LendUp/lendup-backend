@@ -22,8 +22,9 @@ public class FirebaseTokenFilter extends OncePerRequestFilter {
       catch(Exception ignored) { res.sendError(401,"Token Firebase no válido");return; }
       boolean onboarding=(req.getMethod().equals("POST")&&req.getServletPath().equals("/api/v1/estudiantes"))
         ||(req.getMethod().equals("GET")&&req.getServletPath().equals("/api/v1/estudiantes/me"));
+      boolean publicTerms=req.getMethod().equals("GET")&&req.getServletPath().equals("/api/v1/terminos");
       boolean webhook=req.getMethod().equals("POST")&&req.getServletPath().equals("/api/v1/webhooks/mercado-pago");
-      if(req.getServletPath().startsWith("/api/v1/")&&!onboarding&&!webhook&&!Boolean.TRUE.equals(token.getClaims().get("email_verified"))) {
+      if(req.getServletPath().startsWith("/api/v1/")&&!onboarding&&!webhook&&!publicTerms&&!Boolean.TRUE.equals(token.getClaims().get("email_verified"))) {
         res.setStatus(403);res.setContentType("application/json");res.getWriter().write("{\"status\":403,\"error\":\"EMAIL_NOT_VERIFIED\",\"message\":\"Verifica tu correo para ingresar a LendUp\"}");return;
       }
       var authentication=new UsernamePasswordAuthenticationToken(token.getUid(),null,List.of());

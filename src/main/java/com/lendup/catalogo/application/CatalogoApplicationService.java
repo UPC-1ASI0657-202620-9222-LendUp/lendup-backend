@@ -9,7 +9,8 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
 @Service
 public class CatalogoApplicationService extends FlowSupport {
-  public CatalogoApplicationService(CatalogoRepository store,JsonMapper mapper){super(store,mapper);}
+  private final com.lendup.shared.TermsDocumentService terms;
+  public CatalogoApplicationService(CatalogoRepository store,JsonMapper mapper,com.lendup.shared.TermsDocumentService terms){super(store,mapper);this.terms=terms;}
   @Transactional
   public Object execute(String a,Map<String,String> v,Map<String,Object>b,Map<String,String>q){
     String id=id(v);
@@ -28,7 +29,7 @@ public class CatalogoApplicationService extends FlowSupport {
       }
       case "listPublications":return store.searchPublications(q);
       case "publication":return store.get("publicaciones",id);
-      case "termsDocument":return Map.of("message","Las versiones vigentes de términos se configuran en Identidad");
+      case "termsDocument":return terms.document();
       default:throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Acción desconocida");
     }
   }

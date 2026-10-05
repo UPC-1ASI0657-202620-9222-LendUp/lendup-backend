@@ -9,7 +9,8 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
 @Service
 public class IdentidadApplicationService extends FlowSupport {
-  public IdentidadApplicationService(IdentidadRepository store,JsonMapper mapper){super(store,mapper);}
+  private final com.lendup.shared.TermsDocumentService terms;
+  public IdentidadApplicationService(IdentidadRepository store,JsonMapper mapper,com.lendup.shared.TermsDocumentService terms){super(store,mapper);this.terms=terms;}
   @Transactional
   public Object execute(String a,Map<String,String> v,Map<String,Object>b,Map<String,String>q){
     String id=id(v);
@@ -42,6 +43,7 @@ public class IdentidadApplicationService extends FlowSupport {
           "verificacion_referencia",reference,"verificacion_solicitada_en",now()));
       }
       case "terms":{
+        terms.validateAcceptance(string(b,"version_terminos_aceptada"),string(b,"version_descargo_aceptada"));
         if(string(b,"version_terminos_aceptada").isBlank()||string(b,"version_descargo_aceptada").isBlank())
           throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Se requieren ambas versiones aceptadas");
         return store.update("usuarios",userId(),Map.of("version_terminos_aceptada",b.get("version_terminos_aceptada"),
