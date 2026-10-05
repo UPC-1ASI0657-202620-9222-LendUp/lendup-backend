@@ -9,7 +9,25 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.http.HttpStatus;
 @Service
 public class ReservasApplicationService extends FlowSupport {
+  private static final Map<String,String> RESERVATION_SNAPSHOT_FIELDS=Map.of(
+    "tarifa_diaria_aceptada","tarifa_diaria_acordada",
+    "garantia_monetaria_aceptada","garantia_monetaria_acordada",
+    "moneda_aceptada","moneda_acordada",
+    "lugar_intercambio_aceptado","lugar_intercambio_acordado",
+    "condiciones_uso_aceptadas","condiciones_uso_acordadas",
+    "condiciones_entrega_aceptadas","condiciones_entrega_acordadas",
+    "condiciones_devolucion_aceptadas","condiciones_devolucion_acordadas",
+    "condiciones_cancelacion_aceptadas","condiciones_cancelacion_acordadas"
+  );
   public ReservasApplicationService(ReservasRepository store,JsonMapper mapper){super(store,mapper);}
+  static Map<String,Object> reservationSnapshot(Map<String,Object> request){
+    var snapshot=new LinkedHashMap<String,Object>();
+    RESERVATION_SNAPSHOT_FIELDS.forEach((source,target)->{
+      var value=request.get(source);
+      if(value!=null)snapshot.put(target,value);
+    });
+    return snapshot;
+  }
   @Transactional
   public Object execute(String a,Map<String,String> v,Map<String,Object>b,Map<String,String>q){
     String id=id(v);
@@ -42,10 +60,7 @@ public class ReservasApplicationService extends FlowSupport {
         if(store.overlaps(agenda.get("id").toString(),req.get("desde"),req.get("hasta")))throw new ResponseStatusException(HttpStatus.CONFLICT,"Periodo ya reservado");
         var data=new LinkedHashMap<String,Object>();data.put("solicitud_id",id);data.put("agenda_id",agenda.get("id"));
         data.put("desde",req.get("desde"));data.put("hasta",req.get("hasta"));data.put("estado","CONFIRMADA");
-        for(var k:List.of("tarifa_diaria","garantia_monetaria","moneda","lugar_intercambio","condiciones_uso","condiciones_entrega","condiciones_devolucion","condiciones_cancelacion")){
-          var val=req.get(k+"_aceptada");if(val==null)val=req.get(k+"_aceptado");if(val==null)val=req.get(k+"_aceptadas");
-          if(val!=null)data.put(k+"_acordada",val);
-        }
+        data.putAll(reservationSnapshot(req));
         var reservation=store.create("reservas",data);change("solicitudes",id,"estado","ACEPTADA");
         var loan=new LinkedHashMap<String,Object>();loan.put("reserva_id",reservation.get("id"));loan.put("publicacion_id",req.get("publicacion_id"));
         loan.put("prestamista_usuario_id",req.get("prestamista_usuario_id"));loan.put("prestatario_usuario_id",req.get("prestatario_usuario_id"));
