@@ -55,7 +55,7 @@ public abstract class FlowSupport {
   protected Map<String,Object> guaranteeForLoan(Map<String,Object> loan){
     var reservation=store.get("reservas",loan.get("reserva_id").toString());
     var amount=reservation.get("garantia_monetaria_acordada");
-    if(amount==null)throw new ResponseStatusException(HttpStatus.CONFLICT,"El préstamo no requiere garantía");
+    if(amount==null||new java.math.BigDecimal(amount.toString()).signum()<=0)throw new ResponseStatusException(HttpStatus.CONFLICT,"El préstamo no requiere garantía");
     return Map.of("prestamo_id",loan.get("id"),"monto_acordado",amount,"moneda",loan.get("moneda"));
   }
   protected String newIdempotency(Map<String,Object>b){

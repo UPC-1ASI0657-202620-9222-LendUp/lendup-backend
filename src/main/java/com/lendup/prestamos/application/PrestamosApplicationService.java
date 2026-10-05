@@ -11,16 +11,21 @@ import org.springframework.http.HttpStatus;
 public class PrestamosApplicationService extends FlowSupport {
   private final org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate db;
   public PrestamosApplicationService(PrestamosRepository store,JsonMapper mapper,org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate db){super(store,mapper);this.db=db;}
+  private Map<String,Object> withEvidence(Map<String,Object> loan){
+    var copy=new LinkedHashMap<String,Object>(loan);
+    copy.put("evidencias",db.queryForList("SELECT * FROM evidencias WHERE prestamo_id=:id ORDER BY registrada_en,id",Map.of("id",loan.get("id"))));
+    return copy;
+  }
   @Transactional
   public Object execute(String a,Map<String,String> v,Map<String,Object>b,Map<String,String>q){
     String id=id(v);
     switch(a){
       case "listLoans":{
         var result=new ArrayList<Map<String,Object>>();for(var loan:store.list("prestamos","estado",q.get("estado"))){
-          if(userId().equals(loan.get("prestatario_usuario_id"))||userId().equals(loan.get("prestamista_usuario_id")))result.add(loan);
+          if(userId().equals(loan.get("prestatario_usuario_id"))||userId().equals(loan.get("prestamista_usuario_id")))result.add(withEvidence(loan));
         }return result;
       }
-      case "loan":return participantLoan(id);
+      case "loan":return withEvidence(participantLoan(id));
       case "calendar":return execute("listLoans",v,b,q);
       case "delivery":{
         var loan=participantLoan(id);owns(loan,"prestamista_usuario_id");
@@ -40,7 +45,7 @@ public class PrestamosApplicationService extends FlowSupport {
       }
       case "returnLoan":{
         var loan=participantLoan(id);owns(loan,"prestatario_usuario_id");
-        if(!"ACTIVO".equals(loan.get("estado")))throw new ResponseStatusException(HttpStatus.CONFLICT);
+        if(!List.of("ACTIVO","VENCIDO").contains(loan.get("estado")))throw new ResponseStatusException(HttpStatus.CONFLICT);
         return store.update("prestamos",id,Map.of("estado","DEVOLUCION_REGISTRADA","devolucion_registrada_en",java.time.LocalDateTime.now(java.time.Clock.systemUTC())));
       }
       case "confirmReturn":{

@@ -28,6 +28,13 @@ public class EvidenciasController {
     var result=flow.execute("evidence",java.util.Map.of("id",id),bodyMap(body),query);
     return ResponseEntity.status(201).body(result);
   }
+  @PostMapping(value="/prestamos/{id}/evidencias",consumes="multipart/form-data")
+  public ResponseEntity<Object> evidenceFile(@PathVariable("id") String id,
+      @RequestParam("etapa") String etapa,
+      @RequestParam("uploadId") String uploadId,
+      @RequestPart("file") org.springframework.web.multipart.MultipartFile file) {
+    return ResponseEntity.status(201).body(flow.upload(id,etapa,file,uploadId));
+  }
   @Operation(summary="analyze",description="POST /api/v1/prestamos/{id}/analisis-evidencias")
   @PostMapping("/prestamos/{id}/analisis-evidencias")
   public ResponseEntity<Object> analyze(@PathVariable("id") String id, @Valid @RequestBody AnalyzeRequest body) {

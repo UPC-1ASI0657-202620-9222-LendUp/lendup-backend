@@ -28,4 +28,14 @@ class CloudinaryImageClientTest {
       @Override protected Map<String,Object> request(String action,Map<String,String> signed,Map<String,String> extra){assertEquals("destroy",action);assertEquals("true",signed.get("invalidate"));return Map.of("result","not found");}
     };assertDoesNotThrow(()->client.delete("photo"));
   }
+  @Test void sendsVideoToTheCloudinaryVideoEndpoint(){
+    var client=new CloudinaryImageClient("test","1234","secret",JsonMapper.builder().build()){
+      @Override protected Map<String,Object> request(String resource,String action,Map<String,String> signed,Map<String,String> extra){
+        assertEquals("video",resource);assertEquals("upload",action);assertEquals("mp4,webm,mov",signed.get("allowed_formats"));
+        assertEquals("data:video/mp4;base64,AQID",extra.get("file"));
+        return Map.of("public_id",signed.get("public_id"),"secure_url","https://res.cloudinary.com/test/video/upload/evidence.mp4");
+      }
+    };
+    assertEquals("lendup/evidence",client.uploadMedia(new byte[]{1,2,3},"video/mp4","lendup/evidence").publicId());
+  }
 }

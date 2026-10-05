@@ -24,10 +24,13 @@ public class CloudinaryImageClient {
     }catch(java.security.NoSuchAlgorithmException e){throw new IllegalStateException(e);}
   }
   protected Map<String,Object> request(String action,Map<String,String> signed,Map<String,String> extra){
+    return request("image",action,signed,extra);
+  }
+  protected Map<String,Object> request(String resourceType,String action,Map<String,String> signed,Map<String,String> extra){
     requireConfigured();var fields=new LinkedHashMap<>(signed);fields.putAll(extra);fields.put("api_key",key);fields.put("signature",signature(signed,secret));
     var body=fields.entrySet().stream().map(e->URLEncoder.encode(e.getKey(),StandardCharsets.UTF_8)+"="+URLEncoder.encode(e.getValue(),StandardCharsets.UTF_8)).collect(java.util.stream.Collectors.joining("&"));
     try {
-      var req=HttpRequest.newBuilder(URI.create("https://api.cloudinary.com/v1_1/"+cloud+"/image/"+action)).timeout(Duration.ofSeconds(40)).header("Content-Type","application/x-www-form-urlencoded").POST(HttpRequest.BodyPublishers.ofString(body)).build();
+      var req=HttpRequest.newBuilder(URI.create("https://api.cloudinary.com/v1_1/"+cloud+"/"+resourceType+"/"+action)).timeout(Duration.ofSeconds(40)).header("Content-Type","application/x-www-form-urlencoded").POST(HttpRequest.BodyPublishers.ofString(body)).build();
       var response=http.send(req,HttpResponse.BodyHandlers.ofString());
       if(response.statusCode()<200||response.statusCode()>=300)throw new ResponseStatusException(HttpStatus.BAD_GATEWAY,"Cloudinary no pudo procesar la foto. Reintenta.");
       return json.readValue(response.body(),new tools.jackson.core.type.TypeReference<Map<String,Object>>(){});
@@ -40,6 +43,18 @@ public class CloudinaryImageClient {
     if(!publicId.equals(response.get("public_id"))||!url.startsWith("https://res.cloudinary.com/"))throw new ResponseStatusException(HttpStatus.BAD_GATEWAY,"Cloudinary devolvió una foto inválida");
     return new Asset(publicId,url);
   }
+  public Asset uploadMedia(byte[] bytes,String mime,String publicId){
+    if(!mime.startsWith("video/"))return upload(bytes,mime,publicId);
+    var response=request("video","upload",Map.of("public_id",publicId,"timestamp",Long.toString(Instant.now().getEpochSecond()),"overwrite","false","allowed_formats","mp4,webm,mov"),Map.of("file","data:"+mime+";base64,"+Base64.getEncoder().encodeToString(bytes)));
+    var url=Objects.toString(response.get("secure_url"),"");
+    if(!publicId.equals(response.get("public_id"))||!url.startsWith("https://res.cloudinary.com/"))throw new ResponseStatusException(HttpStatus.BAD_GATEWAY,"Cloudinary devolvió un archivo inválido");
+    return new Asset(publicId,url);
+  }
   public void delete(String publicId){var response=request("destroy",Map.of("public_id",publicId,"timestamp",Long.toString(Instant.now().getEpochSecond()),"invalidate","true"),Map.of());
     if(!List.of("ok","not found").contains(response.get("result")))throw new ResponseStatusException(HttpStatus.BAD_GATEWAY,"No pudimos eliminar la foto. Reintenta.");}
+  public void deleteMedia(String publicId,boolean video){
+    if(!video){delete(publicId);return;}
+    var response=request("video","destroy",Map.of("public_id",publicId,"timestamp",Long.toString(Instant.now().getEpochSecond()),"invalidate","true"),Map.of());
+    if(!List.of("ok","not found").contains(response.get("result")))throw new ResponseStatusException(HttpStatus.BAD_GATEWAY,"No pudimos eliminar el archivo. Reintenta.");
+  }
 }

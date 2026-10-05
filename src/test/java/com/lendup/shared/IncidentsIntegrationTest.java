@@ -52,7 +52,7 @@ class IncidentsIntegrationTest {
     var proxy=new ProxyFactory(target);proxy.setProxyTargetClass(true);
     proxy.addAdvice(new TransactionInterceptor(new DataSourceTransactionManager(ds),new AnnotationTransactionAttributeSource()));
     service=(IncidentsService)proxy.getProxy();
-    mvc=MockMvcBuilders.standaloneSetup(new EvidenciasController(new EvidenciasApplicationService(repository,json),json,service)).build();
+    mvc=MockMvcBuilders.standaloneSetup(new EvidenciasController(new EvidenciasApplicationService(repository,json,mock(CloudinaryImageClient.class)),json,service)).build();
     login("lender");
   }
   @AfterEach void clear(){SecurityContextHolder.clearContext();}
