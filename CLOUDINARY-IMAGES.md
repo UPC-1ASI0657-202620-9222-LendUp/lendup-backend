@@ -16,3 +16,5 @@ Protocolo de firmas: https://cloudinary.com/documentation/authentication_signatu
 Upload/Delete: https://cloudinary.com/documentation/image_upload_api_reference
 
 Comprobación de autodeploy: este cambio de documentación permite verificar que Render despliega los commits nuevos de main.
+
+Segunda comprobación de autodeploy: verificar en Render el despliegue automático de este commit.
