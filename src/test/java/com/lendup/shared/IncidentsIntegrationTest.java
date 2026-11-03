@@ -40,13 +40,11 @@ class IncidentsIntegrationTest {
     jdbc.execute("CREATE TABLE incidencias(id VARCHAR(36) PRIMARY KEY,prestamo_id VARCHAR(36),reportada_por_usuario_id VARCHAR(36),tipo VARCHAR(24),descripcion TEXT,estado VARCHAR(20),reportada_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,revision_iniciada_en TIMESTAMP,resuelta_en TIMESTAMP,resuelta_por_usuario_id VARCHAR(36),justificacion_resolucion TEXT,decision_garantia VARCHAR(24),monto_garantia_afectado DECIMAL(12,2),saldo_garantia_previsto DECIMAL(12,2),moneda VARCHAR(3),actualizada_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP)");
     jdbc.execute("CREATE TABLE evidencias(id VARCHAR(36) PRIMARY KEY,prestamo_id VARCHAR(36),incidencia_id VARCHAR(36),registrada_por_usuario_id VARCHAR(36),etapa VARCHAR(20),tipo VARCHAR(20),url TEXT,cloudinary_public_id VARCHAR(255),observacion TEXT,registrada_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,estado_integracion VARCHAR(24))");
     jdbc.execute("CREATE TABLE observaciones_incidencia(id VARCHAR(36) PRIMARY KEY,incidencia_id VARCHAR(36),administrador_usuario_id VARCHAR(36),contenido TEXT,registrada_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP)");
-    jdbc.execute("CREATE TABLE garantias(id VARCHAR(36) PRIMARY KEY,prestamo_id VARCHAR(36),monto_afectado DECIMAL(12,2),actualizada_en TIMESTAMP)");
-    jdbc.execute("CREATE TABLE notificaciones(id VARCHAR(36) PRIMARY KEY,destinatario_usuario_id VARCHAR(36),clave_notificacion VARCHAR(150) UNIQUE,tipo VARCHAR(32),origen_tipo VARCHAR(32),origen_id VARCHAR(36),evento_origen_id VARCHAR(36),titulo VARCHAR(200),mensaje TEXT,estado VARCHAR(24),disponible_en TIMESTAMP)");
+    // Sin tablas garantias ni notificaciones: ahora son de lendup-payments-service y lendup-notifications-service.
     jdbc.update("INSERT INTO roles VALUES ('student','ESTUDIANTE','Student'),('admin','ADMINISTRADOR','Admin')");
     jdbc.update("INSERT INTO usuarios VALUES ('borrower','borrower','student'),('lender','lender','student'),('outsider','outsider','student'),('admin','admin','admin')");
     jdbc.update("INSERT INTO reservas VALUES ('reservation',100,10)");
     jdbc.update("INSERT INTO prestamos VALUES ('loan','reservation','borrower','lender','ACTIVO','PEN',0)");
-    jdbc.update("INSERT INTO garantias VALUES ('guarantee','loan',0,CURRENT_TIMESTAMP)");
     var repository=new Repository(db);var json=JsonMapper.builder().build();
     var target=new IncidentsService(repository,json,db,mock(CloudinaryImageClient.class));
     var proxy=new ProxyFactory(target);proxy.setProxyTargetClass(true);
@@ -72,7 +70,7 @@ class IncidentsIntegrationTest {
     mvc.perform(post("/api/v1/admin/incidencias/"+reportId+"/observaciones").contentType("application/json").content("{\"contenido\":\"Se revisó la evidencia aportada\"}")).andExpect(status().isOk()).andExpect(jsonPath("$.observaciones[0].contenido").value("Se revisó la evidencia aportada"));
     var resolution="{\"justificacion_resolucion\":\"El daño está documentado y corresponde una afectación parcial\",\"decision_garantia\":\"AFECTACION_PARCIAL\",\"monto_garantia_afectado\":20,\"saldo_garantia_previsto\":9999,\"moneda\":\"USD\"}";
     mvc.perform(post("/api/v1/admin/incidencias/"+reportId+"/resolucion").contentType("application/json").content(resolution)).andExpect(status().isOk()).andExpect(jsonPath("$.estado").value("RESUELTA")).andExpect(jsonPath("$.saldo_garantia_previsto").value(80)).andExpect(jsonPath("$.moneda").value("PEN"));
-    assertEquals(0,pending());assertEquals(new BigDecimal("20.00"),db.getJdbcTemplate().queryForObject("SELECT monto_afectado FROM garantias",BigDecimal.class));
+    assertEquals(0,pending());assertEquals(new BigDecimal("20.00"),db.getJdbcTemplate().queryForObject("SELECT monto_garantia_afectado FROM incidencias",BigDecimal.class));
     mvc.perform(post("/api/v1/admin/incidencias/"+reportId+"/resolucion").contentType("application/json").content(resolution)).andExpect(status().isConflict());
     login("borrower");mvc.perform(get("/api/v1/incidencias/"+reportId)).andExpect(status().isOk()).andExpect(jsonPath("$.estado").value("RESUELTA"));
   }

@@ -51,10 +51,7 @@ public class ReservasApplicationService extends FlowSupport {
           var target=k+suffix;if(pub.get(k)!=null)fields.put(target,pub.get(k));
         }
         fields.putIfAbsent("condiciones_aceptadas_en",java.time.LocalDateTime.now(java.time.Clock.systemUTC()));
-        var request=store.create("solicitudes",fields);
-        notifyUser(pub.get("propietario_usuario_id"),"SOLICITUD",request.get("id").toString(),
-          "Nueva solicitud","Recibiste una solicitud para tu objeto");
-        return request;
+        return store.create("solicitudes",fields);
       }
       case "acceptRequest":{
         var req=store.get("solicitudes",id);owns(req,"prestamista_usuario_id");
@@ -73,8 +70,6 @@ public class ReservasApplicationService extends FlowSupport {
         loan.put("tarifa_diaria_acordada",req.get("tarifa_diaria_aceptada"));loan.put("moneda",req.get("moneda_aceptada"));
         loan.put("garantia_requerida",guaranteeRequired(req.get("garantia_monetaria_aceptada")));
         store.create("prestamos",loan);
-        notifyUser(req.get("prestatario_usuario_id"),"RESERVA",reservation.get("id").toString(),"Reserva confirmada","Tu solicitud fue aceptada");
-        notifyUser(req.get("prestamista_usuario_id"),"RESERVA",reservation.get("id").toString(),"Reserva confirmada","Confirmaste una reserva");
         return reservation;
       }
       case "rejectRequest":case "cancelRequest":{
