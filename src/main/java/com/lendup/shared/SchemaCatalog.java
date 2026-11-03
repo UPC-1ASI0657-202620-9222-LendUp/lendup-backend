@@ -41,16 +41,9 @@ public class SchemaCatalog {
         mandatory.put("analisis_evidencias",Set.of("prestamo_id","evidencia_inicial_id","evidencia_final_id","solicitado_por_usuario_id"));
         columns.put("observaciones_incidencia",Set.of("id","incidencia_id","administrador_usuario_id","contenido","registrada_en"));
         mandatory.put("observaciones_incidencia",Set.of("incidencia_id","administrador_usuario_id","contenido"));
-        columns.put("garantias",Set.of("id","prestamo_id","monto_acordado","moneda","estado","monto_constituido","monto_afectado","monto_devuelto","constituida_en","cerrada_en","creada_en","actualizada_en"));
-        mandatory.put("garantias",Set.of("prestamo_id","monto_acordado","moneda"));
-        columns.put("transacciones_economicas",Set.of("id","prestamo_id","garantia_id","cambio_fecha_prestamo_id","incidencia_id","tipo","estado","monto","moneda","comision_proveedor","medio_pago_seleccionado","referencia_proveedor","clave_idempotencia","solicitada_en","confirmada_en","actualizada_en"));
-        mandatory.put("transacciones_economicas",Set.of("prestamo_id","tipo","monto","moneda","clave_idempotencia"));
+        // garantias, transacciones_economicas, notificaciones and webhook_events moved to lendup-payments-service and lendup-notifications-service.
         columns.put("calificaciones",Set.of("id","prestamo_id","evaluador_usuario_id","evaluado_usuario_id","puntaje","comentario","registrada_en"));
         mandatory.put("calificaciones",Set.of("prestamo_id","evaluador_usuario_id","evaluado_usuario_id","puntaje"));
-        columns.put("notificaciones",Set.of("id","destinatario_usuario_id","clave_notificacion","tipo","origen_tipo","origen_id","evento_origen_id","titulo","mensaje","estado","programada_para","disponible_en","leida_en","cancelada_en","enviar_correo","estado_correo","intentos_correo","ultimo_intento_correo_en","correo_enviado_en","ultimo_error_correo","creada_en","actualizada_en"));
-        mandatory.put("notificaciones",Set.of("destinatario_usuario_id","clave_notificacion","tipo","origen_tipo","origen_id","titulo","mensaje","estado"));
-        columns.put("webhook_events",Set.of("id","proveedor","evento_proveedor_id","payload_json","estado","recibido_en"));
-        mandatory.put("webhook_events",Set.of("proveedor","payload_json"));
     }
     public Set<String> columns(String table){return columns.getOrDefault(table,Set.of());}
     public Set<String> mandatory(String table){return mandatory.getOrDefault(table,Set.of());}

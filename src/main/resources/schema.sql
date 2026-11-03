@@ -313,49 +313,6 @@ CREATE TABLE IF NOT EXISTS `observaciones_incidencia` (
   CONSTRAINT `fk_observaciones_incidencia_incidencia_id` FOREIGN KEY (`incidencia_id`) REFERENCES `incidencias` (`id`) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE IF NOT EXISTS `garantias` (
-  `id` CHAR(36) NOT NULL,
-  `prestamo_id` CHAR(36) NOT NULL,
-  `monto_acordado` DECIMAL(12,2) NOT NULL,
-  `moneda` CHAR(3) NOT NULL,
-  `estado` VARCHAR(32) NOT NULL DEFAULT 'PENDIENTE',
-  `monto_constituido` DECIMAL(12,2),
-  `monto_afectado` DECIMAL(12,2) NOT NULL DEFAULT '0',
-  `monto_devuelto` DECIMAL(12,2) NOT NULL DEFAULT '0',
-  `constituida_en` DATETIME(6),
-  `cerrada_en` DATETIME(6),
-  `creada_en` DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `actualizada_en` DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_garantias_prestamo_id` (`prestamo_id`),
-  KEY `idx_garantias_0` (`estado`, `actualizada_en`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE IF NOT EXISTS `transacciones_economicas` (
-  `id` CHAR(36) NOT NULL,
-  `prestamo_id` CHAR(36) NOT NULL,
-  `garantia_id` CHAR(36),
-  `cambio_fecha_prestamo_id` CHAR(36),
-  `incidencia_id` CHAR(36),
-  `tipo` VARCHAR(32) NOT NULL,
-  `estado` VARCHAR(20) NOT NULL DEFAULT 'PENDIENTE',
-  `monto` DECIMAL(12,2) NOT NULL,
-  `moneda` CHAR(3) NOT NULL,
-  `comision_proveedor` DECIMAL(12,2),
-  `medio_pago_seleccionado` VARCHAR(100),
-  `referencia_proveedor` VARCHAR(150),
-  `clave_idempotencia` VARCHAR(150) NOT NULL,
-  `solicitada_en` DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `confirmada_en` DATETIME(6),
-  `actualizada_en` DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_transacciones_economicas_clave_idempotencia` (`clave_idempotencia`),
-  KEY `idx_transacciones_economicas_0` (`prestamo_id`, `solicitada_en`),
-  KEY `idx_transacciones_economicas_1` (`garantia_id`, `solicitada_en`),
-  KEY `idx_transacciones_economicas_2` (`referencia_proveedor`),
-  CONSTRAINT `fk_transacciones_economicas_garantia_id` FOREIGN KEY (`garantia_id`) REFERENCES `garantias` (`id`) ON DELETE RESTRICT
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 CREATE TABLE IF NOT EXISTS `calificaciones` (
   `id` CHAR(36) NOT NULL,
   `prestamo_id` CHAR(36) NOT NULL,
@@ -369,44 +326,14 @@ CREATE TABLE IF NOT EXISTS `calificaciones` (
   KEY `idx_calificaciones_0` (`evaluado_usuario_id`, `registrada_en`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-CREATE TABLE IF NOT EXISTS `notificaciones` (
-  `id` CHAR(36) NOT NULL,
-  `destinatario_usuario_id` CHAR(36) NOT NULL,
-  `clave_notificacion` VARCHAR(200) NOT NULL,
-  `tipo` VARCHAR(20) NOT NULL,
-  `origen_tipo` VARCHAR(20) NOT NULL,
-  `origen_id` CHAR(36) NOT NULL,
-  `evento_origen_id` VARCHAR(150),
-  `titulo` VARCHAR(180) NOT NULL,
-  `mensaje` TEXT NOT NULL,
-  `estado` VARCHAR(20) NOT NULL,
-  `programada_para` DATETIME(6),
-  `disponible_en` DATETIME(6),
-  `leida_en` DATETIME(6),
-  `cancelada_en` DATETIME(6),
-  `enviar_correo` BOOLEAN NOT NULL DEFAULT FALSE,
-  `estado_correo` VARCHAR(20) NOT NULL DEFAULT 'NO_APLICA',
-  `intentos_correo` INTEGER NOT NULL DEFAULT '0',
-  `ultimo_intento_correo_en` DATETIME(6),
-  `correo_enviado_en` DATETIME(6),
-  `ultimo_error_correo` TEXT,
-  `creada_en` DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  `actualizada_en` DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `uq_notificaciones_0` (`destinatario_usuario_id`, `clave_notificacion`),
-  KEY `idx_notificaciones_0` (`destinatario_usuario_id`, `estado`, `creada_en`),
-  KEY `idx_notificaciones_1` (`estado`, `programada_para`),
-  KEY `idx_notificaciones_2` (`estado_correo`, `ultimo_intento_correo_en`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-CREATE TABLE IF NOT EXISTS `webhook_events` (
-  `id` CHAR(36) NOT NULL PRIMARY KEY,
-  `proveedor` VARCHAR(40) NOT NULL,
-  `evento_proveedor_id` VARCHAR(150),
-  `payload_json` JSON NOT NULL,
-  `estado` VARCHAR(32) NOT NULL DEFAULT 'PENDIENTE_VALIDACION',
-  `recibido_en` DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
-  UNIQUE KEY `uq_webhook_proveedor_evento` (`proveedor`,`evento_proveedor_id`)
+-- Inbox de mensajes de RabbitMQ ya procesados (dedupe por event_id). Las tablas garantias,
+-- transacciones_economicas, notificaciones y webhook_events pasaron a lendup-payments-service
+-- y lendup-notifications-service.
+CREATE TABLE IF NOT EXISTS `processed_events` (
+  `event_id` CHAR(36) NOT NULL,
+  `event_type` VARCHAR(100) NOT NULL,
+  `processed_at` DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  PRIMARY KEY (`event_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS universidades (
