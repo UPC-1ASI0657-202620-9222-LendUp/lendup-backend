@@ -1,10 +1,12 @@
 # LendUp API
 
-Backend de LendUp, una plataforma de préstamo de objetos entre estudiantes universitarios. Desarrollado con **Java 21**, **Spring Boot 4**, **Spring JDBC**, **MySQL** y **Firebase Authentication**. La API expone **50 endpoints** organizados en ocho módulos.
+Backend de LendUp, una plataforma de préstamo de objetos entre estudiantes universitarios. Desarrollado con **Java 21**, **Spring Boot 4**, **Spring JDBC**, **MySQL** y **Firebase Authentication**.
 
 ## Arquitectura
 
-Los módulos son `identidad`, `catalogo`, `reservas`, `prestamos`, `evidencias`, `pagos`, `reputacion` y `notificaciones`. Cada uno separa interfaces REST, aplicación, dominio e infraestructura. El paquete `shared` contiene componentes técnicos comunes.
+Los módulos son `identidad`, `catalogo`, `reservas`, `prestamos`, `evidencias` y `reputacion`. Cada uno separa interfaces REST, aplicación, dominio e infraestructura. El paquete `shared` contiene componentes técnicos comunes.
+
+En el Sprint 2, **Pagos y Garantías** y **Notificaciones** salieron del monolito a `lendup-payments-service` y `lendup-notifications-service`. El API Gateway envía sus rutas a esos servicios. Préstamos consume por RabbitMQ los eventos de Pagos que habilitan la entrega y aplican las extensiones pagadas. Detalle en [SPRINT2-CAMBIOS.md](SPRINT2-CAMBIOS.md).
 
 ## Configuración
 
@@ -125,16 +127,6 @@ El backend verifica el token y vincula su `uid` con el usuario registrado en MyS
 | GET | `/api/v1/admin/incidencias` |
 | POST | `/api/v1/admin/incidencias/{id}/resolucion` |
 
-### Pagos y Garantías
-
-| Método | Ruta |
-| --- | --- |
-| GET | `/api/v1/medios-pago` |
-| POST | `/api/v1/pagos` |
-| POST | `/api/v1/garantias` |
-| GET | `/api/v1/prestamos/{id}/transacciones` |
-| POST | `/api/v1/webhooks/mercado-pago` |
-
 ### Reputación
 
 | Método | Ruta |
@@ -142,19 +134,14 @@ El backend verifica el token y vincula su `uid` con el usuario registrado en MyS
 | POST | `/api/v1/prestamos/{id}/calificaciones` |
 | GET | `/api/v1/estudiantes/{id}/reputacion` |
 
-### Notificaciones
+Las rutas de Pagos y Garantías (`/medios-pago`, `/pagos`, `/garantias`, `/prestamos/{id}/transacciones`, `/webhooks/mercado-pago`) y de Notificaciones (`/notificaciones`) las atienden `lendup-payments-service` y `lendup-notifications-service` a través del API Gateway.
 
-| Método | Ruta |
-| --- | --- |
-| GET | `/api/v1/notificaciones` |
-| PATCH | `/api/v1/notificaciones/{id}` |
-
-Las operaciones que dependen de proveedores externos de pagos, almacenamiento de archivos e IA todavía registran estados pendientes.
+Las operaciones que dependen de almacenamiento de archivos e IA todavía registran estados pendientes.
 ## Verificación de correo obligatoria
 
 Antes de usar la API de la aplicación, el token de Firebase debe incluir `email_verified=true`.
 Las únicas rutas de onboarding que admiten una cuenta autenticada sin correo verificado son
-`POST /api/v1/estudiantes` y `GET /api/v1/estudiantes/me`. El webhook público conserva su comportamiento.
+`POST /api/v1/estudiantes` y `GET /api/v1/estudiantes/me`.
 El rechazo usa HTTP 403 y `error=EMAIL_NOT_VERIFIED`.
 
 La consulta del perfil sincroniza `estado_verificacion=VERIFICADO` y `verificado_en`

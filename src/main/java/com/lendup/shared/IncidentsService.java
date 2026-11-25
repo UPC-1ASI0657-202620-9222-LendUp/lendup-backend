@@ -103,12 +103,8 @@ public class IncidentsService extends FlowSupport {
         store.create("evidencias",Map.of("prestamo_id",loan.get("id"),"incidencia_id",incidentId,"registrada_por_usuario_id",userId(),"etapa","INCIDENCIA","tipo","FOTO","url",asset.url(),"cloudinary_public_id",asset.publicId(),"estado_integracion","COMPLETADA"));
       }
       db.update("UPDATE prestamos SET incidencias_pendientes=incidencias_pendientes+1 WHERE id=:id",Map.of("id",loan.get("id")));
-      notifyParticipants(loan,incidentId,"Incidencia reportada","Se ha reportado una incidencia en tu préstamo.");
       return decorate(incident);
     } catch(RuntimeException error) {for(var asset:uploaded) try{cloud.delete(asset);}catch(RuntimeException ignored){} throw error;}
-  }
-  private void notifyParticipants(Map<String,Object> loan,String id,String title,String message) {
-    for(var recipient:new HashSet<>(List.of(loan.get("prestatario_usuario_id"),loan.get("prestamista_usuario_id")))) store.create("notificaciones",Map.of("destinatario_usuario_id",recipient,"clave_notificacion",UUID.randomUUID().toString(),"tipo","EVENTO","origen_tipo","INCIDENCIA","origen_id",id,"evento_origen_id",UUID.randomUUID().toString(),"titulo",title,"mensaje",message,"estado","DISPONIBLE","disponible_en",now()));
   }
   public Map<String,Object> statement(String id,Map<String,Object> body) {
     var incident=access(id);participantLoan(incident.get("prestamo_id").toString());
@@ -118,14 +114,12 @@ public class IncidentsService extends FlowSupport {
     var previous=db.queryForList("SELECT id FROM evidencias WHERE incidencia_id=:id AND registrada_por_usuario_id=:me AND tipo='OBSERVACION'",Map.of("id",id,"me",userId()));
     if(!previous.isEmpty()) throw new ResponseStatusException(HttpStatus.CONFLICT,"Ya presentaste tu descargo");
     store.create("evidencias",Map.of("prestamo_id",incident.get("prestamo_id"),"incidencia_id",id,"registrada_por_usuario_id",userId(),"etapa","INCIDENCIA","tipo","OBSERVACION","observacion",text,"estado_integracion","COMPLETADA"));
-    notifyParticipants(store.get("prestamos",incident.get("prestamo_id").toString()),id,"Descargo presentado","La contraparte presentó su descargo.");
     return decorate(incident);
   }
   public Map<String,Object> review(String id) {
     admin();var incident=store.get("incidencias",id);lockLoan(incident.get("prestamo_id").toString());incident=store.get("incidencias",id);open(incident);
     if(!"EN_REVISION".equals(incident.get("estado"))) {
       incident=store.update("incidencias",id,Map.of("estado","EN_REVISION","revision_iniciada_en",now(),"actualizada_en",now()));
-      notifyParticipants(store.get("prestamos",incident.get("prestamo_id").toString()),id,"Incidencia en revisión","Un administrador está revisando tu incidencia.");
     }
     return decorate(incident);
   }
@@ -152,9 +146,7 @@ public class IncidentsService extends FlowSupport {
     var data=new LinkedHashMap<String,Object>();data.put("estado","RESUELTA");data.put("resuelta_en",now());data.put("resuelta_por_usuario_id",userId());data.put("justificacion_resolucion",justification);data.put("decision_garantia",decision);data.put("monto_garantia_afectado",amount);data.put("saldo_garantia_previsto",available.subtract(amount));data.put("moneda",loan.get("moneda"));data.put("actualizada_en",now());
     var resolved=store.updateTrusted("incidencias",id,data);
     db.update("UPDATE prestamos SET incidencias_pendientes=(SELECT COUNT(*) FROM incidencias WHERE prestamo_id=:id AND estado<>'RESUELTA') WHERE id=:id",Map.of("id",loan.get("id")));
-    // This records the decision; it never fabricates a provider capture or refund.
-    db.update("UPDATE garantias SET monto_afectado=:amount,actualizada_en=:now WHERE prestamo_id=:id",Map.of("amount",agreed.subtract(available).add(amount),"now",now(),"id",loan.get("id")));
-    notifyParticipants(loan,id,"Incidencia resuelta",justification);
+    // Guarantee settlement belongs to lendup-payments-service: it reacts to the IncidenciaResuelta event published by Evidencias.
     return decorate(resolved);
   }
 }

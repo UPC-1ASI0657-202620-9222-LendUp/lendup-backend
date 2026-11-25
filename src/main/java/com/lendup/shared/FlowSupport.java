@@ -52,21 +52,4 @@ public abstract class FlowSupport {
       throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Fechas inválidas: use yyyy-MM-ddTHH:mm:ss");
     }
   }
-  protected Map<String,Object> guaranteeForLoan(Map<String,Object> loan){
-    var reservation=store.get("reservas",loan.get("reserva_id").toString());
-    var amount=reservation.get("garantia_monetaria_acordada");
-    if(amount==null||new java.math.BigDecimal(amount.toString()).signum()<=0)throw new ResponseStatusException(HttpStatus.CONFLICT,"El préstamo no requiere garantía");
-    return Map.of("prestamo_id",loan.get("id"),"monto_acordado",amount,"moneda",loan.get("moneda"));
-  }
-  protected String newIdempotency(Map<String,Object>b){
-    var key=string(b,"clave_idempotencia");
-    if(key.isBlank())throw new ResponseStatusException(HttpStatus.BAD_REQUEST,"Se requiere clave_idempotencia");
-    return key;
-  }
-  protected void notifyUser(Object recipient,String origin,String originId,String title,String message){
-    store.create("notificaciones",Map.of("destinatario_usuario_id",recipient,"clave_notificacion",origin+":"+originId+":"+recipient,
-      "tipo","EVENTO","origen_tipo",origin,"origen_id",originId,
-      "evento_origen_id",UUID.randomUUID().toString(),"titulo",title,"mensaje",message,
-      "estado","DISPONIBLE","disponible_en",now()));
-  }
 }

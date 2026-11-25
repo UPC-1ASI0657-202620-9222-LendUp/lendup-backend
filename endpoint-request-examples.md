@@ -46,26 +46,9 @@ Una evidencia textual también se puede enviar como `{"etapa":"ENTREGA","tipo":"
 
 El correo del registro debe coincidir con el correo del token Firebase; el backend obtiene el `firebase_uid` del token. Solicitar verificación deja el registro pendiente de aprobación.
 
-## Notificaciones
+## Notificaciones, Pagos y Garantías
 
-| Método y ruta | Ejemplo de solicitud |
-| --- | --- |
-| `GET /api/v1/notificaciones` | `/api/v1/notificaciones`; sin cuerpo |
-| `PATCH /api/v1/notificaciones/{id}` | `/api/v1/notificaciones/UUID_NOTIFICACION`; sin cuerpo, marca la notificación como leída |
-
-Estas rutas gestionan notificaciones dentro de la aplicación. El envío de correos mediante SendGrid aún está pendiente.
-
-## Pagos y Garantías
-
-| Método y ruta | Ejemplo de solicitud |
-| --- | --- |
-| `GET /api/v1/medios-pago` | `/api/v1/medios-pago`; sin cuerpo |
-| `POST /api/v1/pagos` | `{"prestamo_id":"UUID_PRESTAMO","tipo":"PAGO_TARIFA","monto":10.00,"medio_pago_seleccionado":"MERCADO_PAGO","clave_idempotencia":"pago-UUID_UNICO"}` |
-| `POST /api/v1/garantias` | `{"prestamo_id":"UUID_PRESTAMO","medio_pago_seleccionado":"MERCADO_PAGO","clave_idempotencia":"garantia-UUID_UNICO"}` |
-| `GET /api/v1/prestamos/{id}/transacciones` | `/api/v1/prestamos/UUID_PRESTAMO/transacciones` |
-| `POST /api/v1/webhooks/mercado-pago` | `{"id":"evento-123","type":"payment","data":{"id":"pago-123"}}` |
-
-Los pagos y garantías quedan `PENDIENTE`; todavía no se procesan operaciones reales con Mercado Pago. El webhook persiste el evento en `PENDIENTE_VALIDACION` y **no confirma pagos**. Debe verificarse la firma y el estado con el proveedor antes de cambiar una transacción.
+Desde el Sprint 2 estas rutas las atienden `lendup-payments-service` y `lendup-notifications-service` a través del API Gateway; los ejemplos están en sus colecciones Postman (`docs/postman/`). La entrega del préstamo se habilita cuando llegan los eventos `pagos.pago-confirmado.v1` (tarifa) y `pagos.garantia-constituida.v1`.
 
 ## Préstamos
 
